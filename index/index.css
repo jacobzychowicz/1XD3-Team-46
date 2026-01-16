@@ -1,0 +1,14 @@
+.headshots {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 12px;
+}
+.names {
+    display: flex;
+    gap: 360px;
+}
+.roles {
+    display: flex;
+    gap: 320px;
+    justify-content: left;
+}
