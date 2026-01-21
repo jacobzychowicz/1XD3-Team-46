@@ -1,0 +1,14 @@
+    #flex1 { 
+    display: flex;
+    align-items: center;
+    background-color: lightcyan;
+}
+
+.flex1 { 
+    margin-left:0px;
+    margin-right:0px;
+    padding:1px;
+    width: 50%;
+    text-align: center;
+
+}
