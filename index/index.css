@@ -1,14 +1,89 @@
-.headshots {
-    display: inline-block;
-    vertical-align: top;
-    margin-right: 12px;
+.header-section {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: grey;
+    color: white
 }
-.names {
-    display: flex;
-    gap: 360px;
+
+.header-section h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
 }
-.roles {
-    display: flex;
-    gap: 320px;
-    justify-content: left;
+
+.team-logo {
+    max-width: 350px;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.about-us {
+    padding: 60px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.about-us h2 {
+    font-size: 40px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.about-us p {
+    font-size: 19px;
+    line-height: 1.8;
+    color: #666;
+}
+
+.skills {
+    margin-top: 40px;
+    padding: 60px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #f8f9fa;
+}
+
+.skills h2 {
+    font-size: 40px;
+    margin-bottom: 30px;
+    color: #333;
+    text-align: center;
+}
+
+.skills ul {
+    list-style: none;
+    padding: 0;
+}
+
+.skills li {
+    font-size: 19px;
+    padding: 15px 0;
+    color: #555;
+    border-bottom: 1px solid #ddd;
+}
+
+
+.skills strong {
+    color: #2d2d2d;
+    font-size: 21px;
+}
+
+@media (max-width: 500px) {
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .team-logo {
+        max-width: 200px;
+    }
+
+    .about-us h2, .skills h2 {
+        font-size: 32px;
+    }
+
+    .about-us p, .skills li {
+        font-size: 16px;
+    }
 }
