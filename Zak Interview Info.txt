@@ -1,0 +1,29 @@
+Name: Zak Yarwood
+Organizational affiliation: N/A
+
+1. Do you have a preference on what the project name should be or can we just make it up?
+
+We can just make it up... something more formal
+
+2. Who are the target users of the app? (mobile or desktop, other special characteristics)
+
+Students interested in medecine/health sci... highschool and undergrad particularly. Admission reviewers
+People following the path of health sciences
+
+More likely desktop because it is research
+
+3. What static information should be available through the app? (company name, address, contact info, etc)
+
+mission statement, disclaimer that it is all educational and not medical advice, about me, contact info (linkedin and email)
+
+4. What kind of design do you want? (any specific websites that you like the look of, anything you don't like the look of)
+
+navbar, likes the design of McMaster web of science website, professional, clean rather than cluttered
+
+5. What data needs to be managed and presented to the user? (information on users, products, user-generated content, schedules, statistics, teams, leaderboards, user badges, and trophies, etc)
+
+categorized content (his research, neuroscience, fitness and health, in the future cardiovascular), dates and timeline progrssion (shows when the information was acquired etc), user feedback area, zak needs to be able to edit and users can only comment at the bottom of specific articles
+
+6. Any interactive elements? (games, tools, animations)
+
+hover animations, possibly have a little flashcard template for him to put information on about each article, when hover over an image give information about it that he can fill in
