@@ -1,14 +1,20 @@
     #flex1 { 
     display: flex;
     align-items: center;
-    background-color: lightcyan;
+    background-color: lightgray;
+    border-radius: 10px;
+
 }
 
 .flex1 { 
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
     margin-left:0px;
     margin-right:0px;
     padding:1px;
     width: 50%;
     text-align: center;
+    justify-content: center;
 
 }
