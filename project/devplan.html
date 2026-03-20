@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="devplan.css" />
+  <link rel="stylesheet" href="../global.css" />
+  <title>Projects</title>
+
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="../index/index.html">Home</a>
+    <a href="../about/about.html">About</a>
+    <a href="../project/project.html">Projects</a>
+    <a href="../showcase/showcase.html">Showcase</a>
+  </nav>
+
+  <header>
+    <h1>Science Snap</h1>
+    <p>Team 46 - Development Plan</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Section 1 - Names</h2>
+
+      <p><span class="label">Team Name:</span> Team 46</p>
+
+      <h3>Team Members</h3>
+      <ul class="team-list">
+        <li>Jamie</li>
+        <li>Jacob</li>
+        <li>Noah</li>
+        <li>Edgar</li>
+      </ul>
+
+      <h3>Client</h3>
+      <ul class="client-list">
+        <li>Zak Yarwood</li>
+      </ul>
+
+      <p><span class="label">App Name</span><br>Science Snap</p>
+    </section>
+
+    <section>
+      <h2>Section 2 - Purpose</h2>
+
+      <p>
+        The app is a blog that shows scientific articles to high schoolers. It allows users to log in and comment on the posts and reply to comments, while it allows the writer to post articles and perform the same functions as the users.
+      </p>
+
+      <p>
+        The client wanted a way to share his research with his peers or other people, so we decided on making a blog-type web app, with features he has requested.
+      </p>
+    </section>
+
+    <section>
+      <h2>Section 3 - Data Descriptions</h2>
+
+      <div class="subsection">
+        <h3>Table: users</h3>
+
+        <h4>Description</h4>
+        <p>
+          We need a users table to ensure that we can differentiate the admin of the site (our client) from normal users. This is because our admin is able to create, edit, and delete posts, while our normal users can only like and comment on the admin’s posts. This table will store a username, password, email, and an isAdmin differentiator.
+        </p>
+
+        <h4>Columns</h4>
+        <ul>
+          <li>id: INT - primary_key, required</li>
+          <li>username: VARCHAR(50), required, UNIQUE</li>
+          <li>email: VARCHAR(100), required, UNIQUE</li>
+          <li>password_hash: VARCHAR(255), required</li>
+          <li>is_admin: BOOLEAN, required</li>
+          <li>created_at: TIMESTAMP, required</li>
+        </ul>
+
+        <h4>Relationships</h4>
+        <ul>
+          <li>One user can create many posts.</li>
+          <li>One user can create many comments.</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Table: posts</h3>
+
+        <h4>Description</h4>
+        <p>
+          Since part of our website is a blog section where our clients can make posts, we need a way of storing and retrieving posts.
+        </p>
+
+        <h4>Columns</h4>
+        <ul>
+          <li>id: INT - primary_key, required</li>
+          <li>title: VARCHAR(255), required</li>
+          <li>description: TEXT, required</li>
+          <li>attachment: VARCHAR(255)</li>
+          <li>user_id: INT - foreign_key, required</li>
+          <li>created_at: TIMESTAMP, required</li>
+        </ul>
+
+        <h4>Relationships</h4>
+        <ul>
+          <li>Each post can have one user.</li>
+          <li>Each post can have many comments.</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Table: comments</h3>
+
+        <h4>Description</h4>
+        <p>
+          Other users will be able to comment on our client's post. The comments table will store these comments.
+        </p>
+
+        <h4>Columns</h4>
+        <ul>
+          <li>id: INT - primary_key, required</li>
+          <li>content: TEXT, required</li>
+          <li>post_id: INT - foreign_key, required</li>
+          <li>user_id: INT - foreign_key, required</li>
+          <li>parent_comment_id: INT - foreign_key, optional</li>
+          <li>created_at: TIMESTAMP, required</li>
+        </ul>
+
+        <h4>Relationships</h4>
+        <ul>
+          <li>Each comment belongs to one post</li>
+          <li>Each comment belongs to one user</li>
+          <li>Comments can optionally belong to other comments (reply structure).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Section 4 - Functions</h2>
+
+      <div class="subsection">
+        <h3>Client’s functionality</h3>
+        <ul>
+          <li>Sign in (SELECT in database)</li>
+          <li>Adding a post to the blog (INSERT into database)</li>
+          <li>Editing a post (UPDATE database)</li>
+          <li>Deleting a post (DELETE part of database)</li>
+          <li>Commenting and replying to comments (INSERT into database)</li>
+          <li>Opening post (SELECT in database)</li>
+          <li>Searching for post (SELECT in database)</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Other users’ functionality</h3>
+        <ul>
+          <li>Creating account (INSERT in database)</li>
+          <li>Signing in (SELECT in database)</li>
+          <li>Commenting (INSERT into database)</li>
+          <li>Replying to comments (INSERT into database)</li>
+          <li>Opening post (SELECT in database)</li>
+          <li>Searching for post (SELECT in database)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Section 5 - Roles of the Team Members</h2>
+
+      <div class="subsection">
+        <h3>Edgar - Blog Viewing and Searching:</h3>
+        <h4>Front End:</h4>
+        <ul>
+          <li>Design the page that list the blogs</li>
+          <li>Individual Blog Post Page</li>
+          <li>Search Bar for Finding Post</li>
+          <li>Info Page / Home Page</li>
+        </ul>
+
+        <h4>Back End:</h4>
+        <ul>
+          <li>Logic for Searching for Post</li>
+          <li>Opening Post (Retrieving from the database)</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Jamie - Blog Post Management Page:</h3>
+        <h4>Front End:</h4>
+        <ul>
+          <li>Page for adding post with title and content</li>
+        </ul>
+
+        <h4>Back End:</h4>
+        <ul>
+          <li>Adding post into database</li>
+          <li>Editing post and updating into database</li>
+          <li>Deleting a post (removing from database)</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Noah - Authentication System</h3>
+        <h4>Frontend:</h4>
+        <ul>
+          <li>Sign in page for users and client</li>
+          <li>Account creation page</li>
+          <li>Input forms for username/email and password</li>
+        </ul>
+
+        <h4>Backend (Database Interaction):</h4>
+        <ul>
+          <li>Creating account</li>
+          <li>Insert new user accounts into the database</li>
+          <li>Signing in (Client / Users)</li>
+          <li>Validate login credentials against stored user information</li>
+          <li>Session management to keep users logged in</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Jacob - Comment and Reply System</h3>
+        <h4>Frontend:</h4>
+        <ul>
+          <li>Comment section under blog posts</li>
+          <li>Comment submission form</li>
+          <li>Reply option for existing comments</li>
+        </ul>
+
+        <h4>Backend:</h4>
+        <ul>
+          <li>Commenting on posts</li>
+          <li>Store new comments in the database</li>
+          <li>Replying to comments</li>
+          <li>Store replies linked to the original comment</li>
+          <li>Retrieve and display comments related to a specific post</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Section 6 - Wireframes</h2>
+
+      <ul>
+        <li>Client wants a navbar</li>
+        <li>Likes design of McMaster website of science</li>
+        <li>Wants professional and clean, not cluttered</li>
+        <li>He puts more importance on the desktop version of site</li>
+        <li>Dropdown Nav for mobile</li>
+        <li>Hover animation, flashcard template to put information about each article, on image hover there is info about it that client can change</li>
+      </ul>
+
+      <div class="image-placeholders">
+        <a href="images/image.png">Picture 1</a></div>
+        <a href="images/Untitled.png">Picture 2</a></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Section 7 - Increments</h2>
+
+      <p><span class="label">First Increment Date:</span> March 31</p>
+
+      <div class="subsection">
+        <h3>Edgar – Post Viewing and Search</h3>
+        <ul>
+          <li>Build homepage layout listing posts (static or minimal dynamic data)</li>
+          <li>Build individual post page layout</li>
+          <li>Add search bar UI and basic PHP SELECT queries</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Jamie – Blog Post Management</h3>
+        <ul>
+          <li>Create Add Post page and form (title + content)</li>
+          <li>Build Edit Post page (basic pre-filled form)</li>
+          <li>Add Delete Post button</li>
+          <li>Add basic PHP scripts to INSERT, UPDATE, DELETE posts in the database</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Noah - Authentication</h3>
+        <ul>
+          <li>Build sign-in page (client + users)</li>
+          <li>Build create account page for users</li>
+          <li>Add basic PHP code to query database for login (SELECT) and insert new users (INSERT)</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3>Jacob– Comment and Reply System</h3>
+        <ul>
+          <li>Build comment form UI</li>
+          <li>Build reply to comment UI</li>
+          <li>Add basic PHP INSERT scripts for comments and replies</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Section 8 - Client Feedback</h2>
+      <p>He said he was very satisfied with the development plan.</p>
+    </section>
+  </main>
+</body>
+</html>
