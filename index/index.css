@@ -1,20 +1,58 @@
 .header-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     padding: 40px 20px;
     background-color: grey;
-    color: white
+    color: white;
+    min-height: calc(100vh - 50px);
+    box-sizing: border-box;
 }
 
 .header-section h1 {
     font-size: 48px;
     margin-bottom: 20px;
+    height: auto;
 }
 
 .team-logo {
-    max-width: 350px;
+    max-width: 600px;
     width: 100%;
     height: auto;
     border-radius: 10px;
+}
+
+.names {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+    min-height: 1.5em;
+    color: #dbdbdb;
+    transition: opacity 600ms ease-in-out, transform 600ms ease-in-out;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.names.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.names.exit {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.names.no-transition {
+    transition: none !important;
+}
+
+@media (max-width: 500px) {
+    .header-section h1 {
+        font-size: 36px;
+    }
 }
 
 .about-us {
