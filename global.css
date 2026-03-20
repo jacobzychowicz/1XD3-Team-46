@@ -5,18 +5,35 @@
 }
 
 .navbar {
-    background-color: #333;
-    padding: 15px;
-    text-align: center;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: #333333;
 }
 
 .navbar a {
+    flex: 1;
+    display: block;
+    padding: 15px 0;
+    box-sizing: border-box;
+    margin: 0;
+    text-align: center;
+    border-left: 1px solid grey; 
+    padding: 20px;
     color: white;
     text-decoration: none;
-    margin: 0 20px;
-    font-size: 18px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.navbar a:last-child {
+    border-right: none;
+}
+
+.navbar a:first-child {
+    border-left: none;
 }
 
 .navbar a:hover {
-    text-decoration: underline;
+    background-color: #3c3c3c;
 }
