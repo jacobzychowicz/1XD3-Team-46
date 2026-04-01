@@ -5,8 +5,14 @@ window.addEventListener('load', function () {
         event.preventDefault();
 
         const postName = document.getElementById('postName').value;
+        const postDesc = document.getElementById('postDesc').value;
+        const postAttach = document.getElementById('postAttach').value;
+
         const postData = {
-            title: postName
+            title: postName, 
+            description: postDesc,
+            attachment: postAttach,
+            user_id: 1
         };
 
         try {
