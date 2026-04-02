@@ -14,13 +14,26 @@ window.addEventListener('load', function () {
                 postElement.style.border = '1px solid black';
                 postElement.style.margin = '10px 0';
                 postElement.style.padding = '10px';
+                postElement.style.position = 'relative';
 
                 postElement.innerHTML = `
                     <h3>${post.title}</h3>
                     <p>${post.description}</p>
                     <br>
                     <small>Posted on: ${post.date_created}</small>
+                    <button class="deleteButton" data-id="${post.id}" style="color: red; cursor: pointer;">
+                        Delete Post
+                    </button> 
                 `;
+
+                const deleteButton = postElement.querySelector('.deleteButton');
+                deleteButton.addEventListener('click', async function() {
+                    const postId = this.getAttribute('data-id');
+                    if (confirm('Are you sure you want to delete this post?')) {
+                        await deletePost(postId);
+                    }
+                });
+
                 container.appendChild(postElement);
             });
         } catch (error) {
@@ -53,7 +66,7 @@ window.addEventListener('load', function () {
 
             if (response.ok) {
                 await loadPosts();
-                postForm.reset();
+                addPostForm.reset();
             } else {
                 console.error('Server Error:', response.statusText);
             }
@@ -61,4 +74,23 @@ window.addEventListener('load', function () {
             console.error('Network Error:', error);
         }
     });
+
+    async function deletePost(id) {
+        try {
+            const response = await fetch('delete_post.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id})
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                loadPosts();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Delete failed:', error);
+        }
+    }
 });
