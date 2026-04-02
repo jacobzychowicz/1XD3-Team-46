@@ -19,8 +19,13 @@
         <button type="submit">Add Post</button>
     </form>
 
-    <form id="editPost">
+    <form id="editPost" style="display: none; border: 1px solid black; padding: 10px; margin-top: 20px;">
         <h2>Edit Post</h2>
+        <input type="hidden" id="editId">
+        <input id="editName" type="text" placeholder="New Title">
+        <textarea id="editDesc" placeholder="New Description"></textarea>
+        <button type="submit">Save Changes</button>
+        <button type="button" onclick="document.getElementById('editPost').style.display='none'">Cancel</button>
     </form>
 
     <form id="deletePost">

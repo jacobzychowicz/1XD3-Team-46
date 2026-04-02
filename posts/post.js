@@ -20,10 +20,13 @@ window.addEventListener('load', function () {
                     <h3>${post.title}</h3>
                     <p>${post.description}</p>
                     <br>
-                    <small>Posted on: ${post.date_created}</small>
+                    <small>ID: ${post.id} | Posted on: ${post.date_created}</small>
                     <button class="deleteButton" data-id="${post.id}" style="color: red; cursor: pointer;">
                         Delete Post
                     </button> 
+                    <button class="editButton" data-id="${post.id}" data-title="${post.title}" data-desc="${post.description}">
+                        Edit Post
+                    </button>
                 `;
 
                 const deleteButton = postElement.querySelector('.deleteButton');
@@ -32,6 +35,16 @@ window.addEventListener('load', function () {
                     if (confirm('Are you sure you want to delete this post?')) {
                         await deletePost(postId);
                     }
+                });
+
+                const editButton = postElement.querySelector('.editButton');
+                editButton.addEventListener('click', function () {
+                    document.getElementById('editPost').style.display = 'block';
+                    document.getElementById('editId').value = this.getAttribute('data-id');
+                    document.getElementById('editName').value = this.getAttribute('data-title');
+                    document.getElementById('editDesc').value = this.getAttribute('data-desc');
+
+                    document.getElementById('editPost').scrollIntoView();
                 });
 
                 container.appendChild(postElement);
@@ -93,4 +106,31 @@ window.addEventListener('load', function () {
             console.error('Delete failed:', error);
         }
     }
+
+    const editPostForm = document.getElementById('editPost');
+
+    editPostForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const editData = {
+            id: document.getElementById('editId').value,
+            title: document.getElementById('editName').value,
+            description: document.getElementById('editDesc').value
+        };
+
+        try {
+            const response = await fetch('edit_post.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(editData)
+            });
+
+            if (response.ok) {
+                editPostForm.style.display = 'none';
+                await loadPosts();
+            }
+        } catch (error) {
+            console.error('Edit failed:', error);
+        }
+    });
 });
