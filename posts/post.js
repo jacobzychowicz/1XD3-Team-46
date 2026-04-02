@@ -20,7 +20,7 @@ window.addEventListener('load', function () {
                     <h3>${post.title}</h3>
                     <p>${post.description}</p>
                     <br>
-                    <small>ID: ${post.id} | Posted on: ${post.date_created}</small>
+                    <small>ID: ${post.id} | Posted on: ${post.created_at}</small>
                     <button class="deleteButton" data-id="${post.id}" style="color: red; cursor: pointer;">
                         Delete Post
                     </button> 
