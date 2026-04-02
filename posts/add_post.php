@@ -2,8 +2,8 @@
 
 $host = 'localhost';
 $dbname = 'zychowj_db';
-$username = 'zychowj_local';
-$password = '10UT8Z{P';
+$username = 'root';
+$password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
