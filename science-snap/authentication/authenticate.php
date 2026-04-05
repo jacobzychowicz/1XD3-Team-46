@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 $email = filter_input(INPUT_POST, "login_email", FILTER_SANITIZE_SPECIAL_CHARS);
 $password = filter_input(INPUT_POST, "login_password");
 
@@ -15,7 +17,11 @@ if (!$password) {
 }
 
 if (!empty($errors)) {
-    foreach ($errors as $e) echo "<p>$e</p>";
+    $_SESSION['login_feedback'] = [
+        'type' => 'error',
+        'message' => implode(' ', $errors)
+    ];
+    header("Location: login.php");
     exit;
 }
 
@@ -40,23 +46,29 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // check if user exists
 if (!$user) {
-    echo "<p>No account found with that email.</p>";
+    $_SESSION['login_feedback'] = [
+        'type' => 'error',
+        'message' => 'No account found with that email.'
+    ];
+    header("Location: login.php");
     exit;
 }
 
 // check password
 if (!password_verify($password, $user['password_hash'])) {
-    echo "<p>Incorrect password.</p>";
+    $_SESSION['login_feedback'] = [
+        'type' => 'error',
+        'message' => 'Incorrect password.'
+    ];
+    header("Location: login.php");
     exit;
 }
-
-// start user's session
-session_start();
 
 $_SESSION['user_id'] = $user['id'];
 $_SESSION['username'] = $user['username'];
 $_SESSION['email'] = $user['email'];
 
-
+header("Location: ../posts/post.php");
+exit;
 
 ?>

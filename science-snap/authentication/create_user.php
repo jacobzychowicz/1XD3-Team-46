@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // retrieve inputs
 $username = filter_input(INPUT_POST, "register_username", FILTER_SANITIZE_SPECIAL_CHARS);
 $email = filter_input(INPUT_POST, "register_email", FILTER_SANITIZE_SPECIAL_CHARS);
@@ -44,9 +46,11 @@ if (!$confirm_password) {
 
 // display errors
 if (!empty($errors)) {
-    foreach ($errors as $error) {
-        echo "<p>$error</p>";
-    }
+    $_SESSION['register_feedback'] = [
+        'type' => 'error',
+        'message' => implode(' ', $errors)
+    ];
+    header("Location: login.php");
     exit;
 }
 
@@ -69,7 +73,11 @@ $stmt->execute([$email]);
 $email_count = $stmt->fetchColumn();
 
 if ($email_count > 0) {
-    echo "<p>An account with this email already exists</p>";
+    $_SESSION['register_feedback'] = [
+        'type' => 'error',
+        'message' => 'An account with this email already exists.'
+    ];
+    header("Location: login.php");
     exit;
 }
 
@@ -80,7 +88,11 @@ $stmt->execute([$username]);
 $username_count = $stmt->fetchColumn();
 
 if ($username_count > 0) {
-    echo "<p>An account with this username already exists</p>";
+    $_SESSION['register_feedback'] = [
+        'type' => 'error',
+        'message' => 'An account with this username already exists.'
+    ];
+    header("Location: login.php");
     exit;
 }
 
@@ -93,9 +105,19 @@ $stmt = $dbh->prepare($create_user_sql);
 $success = $stmt->execute($create_user_args);
 
 if ($success) {
-    echo "<p>New user created</p>";
+    $_SESSION['user_id'] = $dbh->lastInsertId();
+    $_SESSION['username'] = $username;
+    $_SESSION['email'] = $email;
+
+    header("Location: ../posts/post.php");
+    exit;
 } else {
-    echo "<p>Something went wrong. Please try again</p>";
+    $_SESSION['register_feedback'] = [
+        'type' => 'error',
+        'message' => 'Something went wrong. Please try again.'
+    ];
+    header("Location: login.php");
+    exit;
 }
 
 ?>
