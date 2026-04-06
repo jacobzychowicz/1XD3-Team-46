@@ -30,31 +30,38 @@ $error_message = null;
 $post_feedback = $_SESSION['post_feedback'] ?? null;
 unset($_SESSION['post_feedback']);
 
+$comment_feedback = $_SESSION['comment_feedback'] ?? null;
+unset($_SESSION['comment_feedback']);
 
-  try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$comments_by_parent = [];
 
-    $stmt = $pdo->prepare(
-      'SELECT posts.*, users.username,
-          CASE WHEN posts.user_id = :current_user_id THEN 1 ELSE 0 END AS is_owner
-       FROM posts
-       LEFT JOIN users ON posts.user_id = users.id
-       WHERE posts.id = :post_id'
-    );
-    $stmt->execute([
-      ':current_user_id' => $current_user_id ?? 0,
-      ':post_id' => $post_id
-    ]);
+try {
+  $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $post = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt = $pdo->prepare(
+    'SELECT posts.*, users.username,
+        CASE WHEN posts.user_id = :current_user_id THEN 1 ELSE 0 END AS is_owner
+     FROM posts
+     LEFT JOIN users ON posts.user_id = users.id
+     WHERE posts.id = :post_id'
+  );
+  $stmt->execute([
+    ':current_user_id' => $current_user_id ?? 0,
+    ':post_id' => $post_id,
+  ]);
 
-    if (!$post) {
-      $error_message = 'Post not found.';
-    }
-  } catch (PDOException $e) {
-    $error_message = 'Unable to load the post.';
+  $post = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  if (!$post) {
+    $error_message = 'Post not found.';
+  } else {
+    require_once __DIR__ . '/../comments/comments.php';
+    $comments_by_parent = comments_load_tree($pdo, (int) $post_id);
   }
+} catch (PDOException $e) {
+  $error_message = 'Unable to load the post.';
+}
 
 // build links
 $posts_link = 'post.php';
@@ -71,6 +78,8 @@ $delete_action = 'delete_post.php';
   <meta charset="utf-8" />
   <link rel="stylesheet" href="../css/common.css">
   <link rel="stylesheet" href="../css/posts.css">
+  <link rel="stylesheet" href="../css/comments.css">
+  <script src="../comments/comments.js" defer></script>
   <title>View Post</title>
   </head>
   <body>
@@ -157,6 +166,8 @@ $delete_action = 'delete_post.php';
         </form>
         <?php endif; ?>
       </article>
+
+      <?php include __DIR__ . '/../comments/comments_section.php'; ?>
       <?php endif; ?>
     </main>
   </body>

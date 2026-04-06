@@ -1,0 +1,44 @@
+.comments-section {
+	margin-top: 24px;
+	padding-top: 16px;
+	border-top: 1px solid #000;
+}
+
+.comment-form,
+.comment-reply-form {
+	margin: 12px 0 16px;
+}
+
+.comments-login-hint {
+	margin: 8px 0 16px;
+}
+
+.comment-item {
+	margin: 10px 0;
+	padding: 10px;
+	border: 1px solid #000;
+}
+
+.comment-body {
+	margin: 0 0 8px;
+}
+
+.comment-reply-actions {
+	margin-top: 8px;
+}
+
+.comment-reply-toggle {
+	cursor: pointer;
+}
+
+.comment-reply-panel {
+	margin-top: 10px;
+	padding-top: 10px;
+	border-top: 1px dashed #c8c8c8;
+}
+
+.comment-replies {
+	margin-top: 10px;
+	padding-left: 12px;
+	border-left: 1px solid #c8c8c8;
+}
