@@ -1,223 +1,133 @@
 <?php
 
+// get session name
+$session_name = session_name();
+
+// get session id
+if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
+    session_id($_GET[$session_name]);
+} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
+    session_id($_POST[$session_name]);
+}
+
+session_start();
+
+// build url params
+$session_query = $session_name . '=' . urlencode(session_id());
+
+// handle logout
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+    $_SESSION = [];
+    session_destroy();
+    header('Location: ../authentication/login.php');
+    exit;
+}
+
+// get user info from session
+$user_id = $_SESSION['user_id'] ?? null;
+$user_name = $_SESSION['username'] ?? null;
+
+// redirect to login if user is not logged in (just in case lol)
+if (!$user_id) {
+    header('Location: ../authentication/login.php?' . $session_query);
+    exit;
+}
+
+// PDO values
 $host = 'localhost';
 $dbname = 'science_snap';
 $username = 'root';
 $password = '';
 
-session_start();
+// create post feedback
+$feedback_message = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
-        $_SESSION = [];
+// create post
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['logout'])) {
+    $title = trim($_POST['title'] ?? '');
+    $description = trim($_POST['description'] ?? '');
 
-        if (ini_get('session.use_cookies')) {
-                $params = session_get_cookie_params();
-                setcookie(
-                        session_name(),
-                        '',
-                        time() - 42000,
-                        $params['path'],
-                        $params['domain'],
-                        $params['secure'],
-                        $params['httponly']
-                );
+    if ($title === '') {
+        $feedback_message = 'Post title is required.';
+    } else {
+        try {
+            $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+
+            $stmt = $pdo->prepare('INSERT INTO posts (title, description, user_id) VALUES (:title, :description, :user_id)');
+            $stmt->execute([
+                ':title' => $title,
+                ':description' => $description,
+                ':user_id' => $user_id
+            ]);
+
+            // redirect to the new post
+            header('Location: post.php?' . $session_query);
+            exit;
+        } catch (PDOException $e) {
+            $feedback_message = 'Unable to create post.';
         }
-
-        session_destroy();
-        header('Location: ../authentication/login.php');
-        exit;
+    }
 }
 
-$user_id = $_SESSION['user_id'] ?? null;
-$user_name = $_SESSION['username'] ?? null;
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        if (!$user_id) {
-                header('Location: ../authentication/login.php');
-                exit;
-        }
-        ?>
+// links
+$posts_link = 'post.php?' . $session_query;
+$create_post_link = 'add_post.php?' . $session_query;
+$logout_action = 'add_post.php?' . $session_query;
+?>
 <!doctype html>
 <html>
     <head>
         <meta charset="utf-8" />
+        <link rel="stylesheet" href="../css/common.css">
+        <link rel="stylesheet" href="../css/posts.css">
         <title>Create Post</title>
     </head>
     <body>
-        <header
-            style="
-                background-color: #e6e6e6;
-                padding: 14px 16px;
-                text-align: center;
-                position: relative;
-            "
-        >
-            <h1 style="margin: 0; font-size: 1.5rem">Science Snap</h1>
-            <div
-                style="
-                    position: absolute;
-                    right: 16px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                "
-            >
-                <span
-                    style="
-                        color: #333;
-                        font-size: 0.95rem;
-                        font-weight: 600;
-                    "
-                    >Current User: <?php echo htmlspecialchars($user_name); ?></span
-                >
+        <header class="site-header">
+            <h1 class="site-title">Science Snap</h1>
+            <div class="site-nav">
+                <span class="current-user">Current User: <?php echo htmlspecialchars($user_name); ?></span>
                 <a
-                    href="post.php"
-                    style="
-                        display: inline-block;
-                        padding: 6px 12px;
-                        border: 1px solid #666;
-                        background-color: #f3f3f3;
-                        color: #000;
-                        text-decoration: none;
-                        border-radius: 4px;
-                    "
+                    href="<?php echo htmlspecialchars($posts_link); ?>"
+                    class="nav-link nav-link-secondary"
                     >Posts</a
                 >
                 <a
-                    href="add_post.php"
-                    style="
-                        display: inline-block;
-                        padding: 6px 12px;
-                        border: 1px solid #666;
-                        background-color: #dcdcdc;
-                        color: #000;
-                        text-decoration: none;
-                        border-radius: 4px;
-                    "
+                    href="<?php echo htmlspecialchars($create_post_link); ?>"
+                    class="nav-link nav-link-primary"
                     >Create Post</a
                 >
-                <form action="add_post.php" method="post" style="margin: 0;">
+                <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
+                    <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
                     <input type="hidden" name="logout" value="1" />
-                    <button
-                        type="submit"
-                        style="
-                            display: inline-block;
-                            padding: 6px 12px;
-                            border: 1px solid #666;
-                            background-color: #f3f3f3;
-                            color: #000;
-                            text-decoration: none;
-                            border-radius: 4px;
-                            cursor: pointer;
-                        "
-                    >Logout</button>
+                    <button type="submit" class="logout-button">Logout</button>
                 </form>
             </div>
         </header>
 
-        <main style="max-width: 720px; margin: 32px auto; padding: 0 16px;">
+        <!-- create post form -->
+        <main class="page-main page-main-narrow">
             <h2>Create Post</h2>
-            <form id="addPost">
-                <label for="postName">Post name: </label><br />
-                <input id="postName" placeholder="Post Title" type="text" />
+            <form action="<?php echo htmlspecialchars($create_post_link); ?>" method="post">
+                <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
+                <label for="postName">Post name:</label><br />
+                <input id="postName" name="title" placeholder="Post Title" type="text" value="<?php echo htmlspecialchars($_POST['title'] ?? ''); ?>" />
                 <br /><br />
 
-                <label for="postDesc">Post description: </label><br />
-                <textarea id="postDesc" placeholder="Describe your post..." style="width: 100%; min-height: 140px;"></textarea>
+                <label for="postDesc">Post description:</label><br />
+                <textarea id="postDesc" name="description" placeholder="Describe your post..." class="post-textarea"><?php echo htmlspecialchars($_POST['description'] ?? ''); ?></textarea>
                 <br /><br />
 
-                <label for="postAttach">Attachments</label><br />
-                <input id="postAttach" placeholder="Image URL (optional)" type="file" />
-                <br /><br />
-
-                <div style="display: flex; gap: 12px; align-items: center;">
+                <div class="form-actions">
                     <button type="submit">Create Post</button>
-                    <a href="post.php" style="color: #000;">Cancel</a>
+                    <a href="<?php echo htmlspecialchars($posts_link); ?>" class="text-link">Cancel</a>
                 </div>
             </form>
-            <p id="createPostFeedback" style="margin-top: 12px;"></p>
+
+            <!-- show post feedback -->
+            <?php if ($feedback_message !== ''): ?>
+            <p class="page-feedback feedback-error"><?php echo htmlspecialchars($feedback_message); ?></p>
+            <?php endif; ?>
         </main>
-
-        <script>
-            window.addEventListener('load', function () {
-                const addPostForm = document.getElementById('addPost');
-                const feedback = document.getElementById('createPostFeedback');
-
-                addPostForm.addEventListener('submit', async function (event) {
-                    event.preventDefault();
-
-                    const postData = {
-                        title: document.getElementById('postName').value,
-                        description: document.getElementById('postDesc').value,
-                        attachment: document.getElementById('postAttach').value
-                    };
-
-                    try {
-                        const response = await fetch('add_post.php', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(postData)
-                        });
-
-                        const result = await response.json();
-
-                        if (result.status === 'success') {
-                            window.location.href = 'post.php';
-                            return;
-                        }
-
-                        feedback.textContent = result.message || 'Unable to create post.';
-                        feedback.style.color = '#b00020';
-                    } catch (error) {
-                        console.error('Create failed:', error);
-                        feedback.textContent = 'Unable to create post.';
-                        feedback.style.color = '#b00020';
-                    }
-                });
-            });
-        </script>
     </body>
 </html>
-<?php
-        exit;
-}
-
-header('Content-Type: application/json');
-
-if (!$user_id) {
-        http_response_code(401);
-        echo json_encode(['status' => 'error', 'message' => 'You must be logged in to create a post.']);
-        exit;
-}
-
-try {
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $json = file_get_contents('php://input');
-        $data = json_decode($json, true);
-
-        if (!empty($data['title'])) {
-                $sql = "INSERT INTO posts (title, description, attachment, user_id) VALUES (:title, :description, :attachment, :user_id)";
-                $stmt = $pdo->prepare($sql);
-
-                $stmt->execute([
-                        ':title' => $data['title'],
-                        ':description' => $data['description'] ?? '',
-                        ':attachment' => $data['attachment'] ?? '',
-                        ':user_id' => $user_id
-                ]);
-
-                echo json_encode(['status' => 'success']);
-        } else {
-                http_response_code(400);
-                echo json_encode(['status' => 'error', 'message' => 'Post title is required.']);
-        }
-} catch (PDOException $e) {
-        http_response_code(500);
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-}
-
-?>

@@ -1,13 +1,26 @@
 <?php
+
+// get session name
+$session_name = session_name();
+
+// get session id
+if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
+    session_id($_GET[$session_name]);
+} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
+    session_id($_POST[$session_name]);
+}
+
 session_start();
 
-// retrieve inputs
-$username = filter_input(INPUT_POST, "register_username", FILTER_SANITIZE_SPECIAL_CHARS);
-$email = filter_input(INPUT_POST, "register_email", FILTER_SANITIZE_SPECIAL_CHARS);
-$password = filter_input(INPUT_POST, "register_password", FILTER_SANITIZE_SPECIAL_CHARS);
-$confirm_password = filter_input(INPUT_POST, "register_confirm_password", FILTER_SANITIZE_SPECIAL_CHARS);
+// build url params
+$session_query = $session_name . '=' . urlencode(session_id());
 
-// validation
+// get form input
+$username = filter_input(INPUT_POST, 'register_username', FILTER_SANITIZE_SPECIAL_CHARS);
+$email = filter_input(INPUT_POST, 'register_email', FILTER_SANITIZE_SPECIAL_CHARS);
+$password = filter_input(INPUT_POST, 'register_password', FILTER_SANITIZE_SPECIAL_CHARS);
+$confirm_password = filter_input(INPUT_POST, 'register_confirm_password', FILTER_SANITIZE_SPECIAL_CHARS);
+
 $errors = [];
 
 // username validation
@@ -24,7 +37,7 @@ if (!$email) {
     $errors[] = "Invalid email format.";
 }
 
-// password validation
+// password validation.
 if (!$password) {
     $errors[] = "Password is required.";
 } elseif (strlen($password) < 8) {
@@ -37,27 +50,28 @@ if (!$password) {
     $errors[] = "Password must contain at least one number.";
 }
 
-// ensure passwords match
+// validate password confirmation
 if (!$confirm_password) {
     $errors[] = "Please confirm your password.";
 } elseif ($password !== $confirm_password) {
     $errors[] = "Passwords do not match.";
 }
 
-// display errors
+// Return the user to the login page if validation fails.
 if (!empty($errors)) {
     $_SESSION['register_feedback'] = [
         'type' => 'error',
+        // put array of errors into single string
         'message' => implode(' ', $errors)
     ];
-    header("Location: login.php");
+    header('Location: login.php?' . $session_query);
     exit;
 }
 
-// db vars
-$dbname = "science_snap";
-$db_username = "root";
-$db_password = "";
+// PDO values
+$dbname = 'science_snap';
+$db_username = 'root';
+$db_password = '';
 
 // connect to db
 try {
@@ -66,8 +80,8 @@ try {
     die("ERROR: Couldn't connect. {$e->getMessage()}");
 }
 
-// check if email is already used
-$check_email_sql = "SELECT COUNT(*) FROM `users` WHERE `email`=?;";
+// check if email in use
+$check_email_sql = 'SELECT COUNT(*) FROM `users` WHERE `email`=?;';
 $stmt = $dbh->prepare($check_email_sql);
 $stmt->execute([$email]);
 $email_count = $stmt->fetchColumn();
@@ -77,12 +91,12 @@ if ($email_count > 0) {
         'type' => 'error',
         'message' => 'An account with this email already exists.'
     ];
-    header("Location: login.php");
+    header('Location: login.php?' . $session_query);
     exit;
 }
 
-// check if username is already users
-$check_username_sql = "SELECT COUNT(*) FROM `users` WHERE `username`=?;";
+// check if username is in use
+$check_username_sql = 'SELECT COUNT(*) FROM `users` WHERE `username`=?;';
 $stmt = $dbh->prepare($check_username_sql);
 $stmt->execute([$username]);
 $username_count = $stmt->fetchColumn();
@@ -92,31 +106,39 @@ if ($username_count > 0) {
         'type' => 'error',
         'message' => 'An account with this username already exists.'
     ];
-    header("Location: login.php");
+    header('Location: login.php?' . $session_query);
     exit;
 }
 
-// create new user row
+// hash password
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-$create_user_sql = "INSERT INTO `users` (`username`, `email`, `password_hash`) VALUES (?, ?, ?);";
+// insert new user into db
+$create_user_sql = 'INSERT INTO `users` (`username`, `email`, `password_hash`) VALUES (?, ?, ?);';
 $create_user_args = [$username, $email, $password_hash];
 $stmt = $dbh->prepare($create_user_sql);
 $success = $stmt->execute($create_user_args);
 
 if ($success) {
+    session_regenerate_id(true);
+
+    // need to rebuild url params because new session id
+    $session_query = $session_name . '=' . urlencode(session_id());
+
+    // store user info in session
     $_SESSION['user_id'] = $dbh->lastInsertId();
     $_SESSION['username'] = $username;
     $_SESSION['email'] = $email;
 
-    header("Location: ../posts/post.php");
+    // redirect to posts page
+    header('Location: ../posts/post.php?' . $session_query);
     exit;
 } else {
     $_SESSION['register_feedback'] = [
         'type' => 'error',
         'message' => 'Something went wrong. Please try again.'
     ];
-    header("Location: login.php");
+    header('Location: login.php?' . $session_query);
     exit;
 }
 

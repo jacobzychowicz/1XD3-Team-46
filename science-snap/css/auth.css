@@ -1,0 +1,11 @@
+.auth-main {
+	display: flex;
+	gap: 32px;
+	align-items: flex-start;
+	padding: 24px 16px;
+}
+
+.auth-section {
+	flex: 1;
+	max-width: 420px;
+}

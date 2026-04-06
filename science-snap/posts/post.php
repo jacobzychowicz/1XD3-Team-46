@@ -1,31 +1,70 @@
 <?php
-session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
-  $_SESSION = [];
+// get session name
+$session_name = session_name();
 
-  if (ini_get('session.use_cookies')) {
-    $params = session_get_cookie_params();
-    setcookie(
-      session_name(),
-      '',
-      time() - 42000,
-      $params['path'],
-      $params['domain'],
-      $params['secure'],
-      $params['httponly']
-    );
-  }
-
-  session_destroy();
-  header('Location: ../authentication/login.php');
-  exit;
+// get session id
+if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
+    session_id($_GET[$session_name]);
+} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
+    session_id($_POST[$session_name]);
 }
 
+session_start();
+
+// build query string for url param
+$session_query = $session_name . '=' . urlencode(session_id());
+
+// handle logout
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+    $_SESSION = [];
+    session_destroy();
+    header('Location: ../authentication/login.php');
+    exit;
+}
+
+// get user info from session
 $user_name = $_SESSION['username'] ?? null;
 $current_user_id = $_SESSION['user_id'] ?? null;
 $is_logged_in = $current_user_id !== null;
 
+// pdo vals
+$host = 'localhost';
+$dbname = 'science_snap';
+$username = 'root';
+$password = '';
+
+// get post feedback and remove it from session
+$post_feedback = $_SESSION['post_feedback'] ?? null;
+unset($_SESSION['post_feedback']);
+
+$posts = [];
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+
+    // get all posts with author username and a flag indicating if the current user owns each post
+    $stmt = $pdo->prepare(
+        'SELECT posts.*, users.username,
+                CASE WHEN posts.user_id = :current_user_id THEN 1 ELSE 0 END AS is_owner
+         FROM posts
+         LEFT JOIN users ON posts.user_id = users.id
+         ORDER BY posts.created_at DESC'
+    );
+    $stmt->execute([':current_user_id' => $current_user_id ?? 0]);
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $post_feedback = [
+        'type' => 'error',
+        'message' => 'Unable to load posts.'
+    ];
+}
+
+// build links
+$posts_link = 'post.php?' . $session_query;
+$create_post_link = 'add_post.php?' . $session_query;
+$login_link = '../authentication/login.php?' . $session_query;
+$logout_action = 'post.php?' . $session_query;
 ?>
 
 <!doctype html>
@@ -33,177 +72,88 @@ $is_logged_in = $current_user_id !== null;
 <html>
   <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/posts.css">
     <title>Posts</title>
-    <script>
-      window.postPageContext = {
-        isLoggedIn: <?php echo json_encode($is_logged_in); ?>,
-        currentUserId: <?php echo json_encode($current_user_id); ?>,
-        currentUserName: <?php echo json_encode($user_name); ?>
-      };
-    </script>
-    <script src="post.js"></script>
   </head>
 
   <body>
-    <header
-      style="
-        background-color: #e6e6e6;
-        padding: 14px 16px;
-        text-align: center;
-        position: relative;
-      "
-    >
-      <h1 style="margin: 0; font-size: 1.5rem">Science Snap</h1>
-      <div
-        style="
-          position: absolute;
-          right: 16px;
-          top: 50%;
-          transform: translateY(-50%);
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        "
-      >
+    <header class="site-header">
+      <h1 class="site-title">Science Snap</h1>
+      <div class="site-nav">
         <?php if ($user_name): ?>
-        <span
-          style="
-            color: #333;
-            font-size: 0.95rem;
-            font-weight: 600;
-          "
-          >Current User: <?php echo htmlspecialchars($user_name); ?></span
-        >
+        <span class="current-user">Current User: <?php echo htmlspecialchars($user_name); ?></span>
         <?php endif; ?>
         <a
-          href="post.php"
-          style="
-            display: inline-block;
-            padding: 6px 12px;
-            border: 1px solid #666;
-            background-color: #dcdcdc;
-            color: #000;
-            text-decoration: none;
-            border-radius: 4px;
-          "
+          href="<?php echo htmlspecialchars($posts_link); ?>"
+          class="nav-link nav-link-primary"
           >Posts</a
         >
         <?php if ($is_logged_in): ?>
         <a
-          href="add_post.php"
-          style="
-            display: inline-block;
-            padding: 6px 12px;
-            border: 1px solid #666;
-            background-color: #f3f3f3;
-            color: #000;
-            text-decoration: none;
-            border-radius: 4px;
-          "
+          href="<?php echo htmlspecialchars($create_post_link); ?>"
+          class="nav-link nav-link-secondary"
           >Create Post</a
         >
         <?php endif; ?>
         <?php if ($is_logged_in): ?>
-        <form action="post.php" method="post" style="margin: 0;">
+          <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
+            <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
           <input type="hidden" name="logout" value="1" />
-          <button
-            type="submit"
-            style="
-              display: inline-block;
-              padding: 6px 12px;
-              border: 1px solid #666;
-              background-color: #f3f3f3;
-              color: #000;
-              text-decoration: none;
-              border-radius: 4px;
-              cursor: pointer;
-            "
-          >Logout</button>
+          <button type="submit" class="logout-button">Logout</button>
         </form>
         <?php else: ?>
         <a
-          href="../authentication/login.php"
-          style="
-            display: inline-block;
-            padding: 6px 12px;
-            border: 1px solid #666;
-            background-color: #f3f3f3;
-            color: #000;
-            text-decoration: none;
-            border-radius: 4px;
-          "
+          href="<?php echo htmlspecialchars($login_link); ?>"
+          class="nav-link nav-link-secondary"
           >Login</a
         >
         <?php endif; ?>
       </div>
     </header>
+
+    <!-- show create post link if user is logged in -->
     <?php if ($is_logged_in): ?>
-    <div
-      style="
-        margin: 20px 0;
-        padding: 12px 16px;
-        border: 1px solid #c8c8c8;
-        background-color: #f8f8f8;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      "
-    >
+    <div class="create-banner">
       <span>Create a new post</span>
       <a
-        href="add_post.php"
-        style="
-          display: inline-block;
-          padding: 8px 14px;
-          border: 1px solid #666;
-          background-color: #e6e6e6;
-          color: #000;
-          text-decoration: none;
-          border-radius: 4px;
-        "
+        href="<?php echo htmlspecialchars($create_post_link); ?>"
+        class="banner-action"
       >Create Post</a>
     </div>
     <?php else: ?>
-    <div
-      style="
-        margin: 20px 0;
-        padding: 12px 16px;
-        border: 1px solid #c8c8c8;
-        background-color: #f8f8f8;
-      "
-    >
+    <div class="info-banner">
       Log in to create posts and edit your own posts.
     </div>
     <?php endif; ?>
 
-    <div id="postContainer"></div>
-
-    <?php if ($is_logged_in): ?>
-    <form
-      id="editPost"
-      style="
-        display: none;
-        border: 1px solid black;
-        padding: 10px;
-        margin-top: 20px;
-      "
-    >
-      <h2>Edit Post</h2>
-      <input type="hidden" id="editId" />
-      <input id="editName" type="text" placeholder="New Title" />
-      <textarea id="editDesc" placeholder="New Description"></textarea>
-      <button type="submit">Save Changes</button>
-      <button
-        type="button"
-        onclick="document.getElementById('editPost').style.display = 'none'"
-      >
-        Cancel
-      </button>
-    </form>
+    <!-- error messages from posts -->
+    <?php if ($post_feedback): ?>
+    <p class="post-feedback <?php echo $post_feedback['type'] === 'error' ? 'feedback-error' : 'feedback-success'; ?>">
+      <?php echo htmlspecialchars($post_feedback['message']); ?>
+    </p>
     <?php endif; ?>
 
-    <form id="deletePost">
-      <h2>Delete Post</h2>
-    </form>
+    <!-- render all posts -->
+    <div id="postContainer">
+      <?php foreach ($posts as $post): ?>
+      <?php $post_link = 'display_post.php?id=' . urlencode((string) $post['id']) . '&' . $session_query; ?>
+      <div class="post-list-item">
+        <h3 class="post-list-title">
+          <a href="<?php echo htmlspecialchars($post_link); ?>">
+            <?php echo htmlspecialchars($post['title']); ?>
+          </a>
+        </h3>
+        <p><?php echo nl2br(htmlspecialchars($post['description'])); ?></p>
+        <a href="<?php echo htmlspecialchars($post_link); ?>">View Post</a>
+        <br>
+        <small>
+          ID: <?php echo htmlspecialchars((string) $post['id']); ?> |
+          Posted by: <?php echo htmlspecialchars($post['username'] ?? 'Unknown'); ?> |
+          Posted on: <?php echo htmlspecialchars($post['created_at']); ?>
+        </small>
+      </div>
+      <?php endforeach; ?>
+    </div>
   </body>
 </html>

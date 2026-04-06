@@ -1,0 +1,118 @@
+.page-main {
+	max-width: 800px;
+	margin: 32px auto;
+	padding: 0 16px;
+}
+
+.page-main-narrow {
+	max-width: 720px;
+}
+
+.create-banner {
+	margin: 20px 0;
+	padding: 12px 16px;
+	border: 1px solid #c8c8c8;
+	background-color: #f8f8f8;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.info-banner {
+	margin: 20px 0;
+	padding: 12px 16px;
+	border: 1px solid #c8c8c8;
+	background-color: #f8f8f8;
+}
+
+.banner-action {
+	display: inline-block;
+	padding: 8px 14px;
+	border: 1px solid #666;
+	background-color: #e6e6e6;
+	color: #000;
+	text-decoration: none;
+	border-radius: 4px;
+}
+
+.post-feedback {
+	margin: 20px 0;
+}
+
+.post-list-item,
+.post-article,
+.post-edit-form {
+	border: 1px solid #000;
+}
+
+.post-list-item {
+	margin: 10px 0;
+	padding: 10px;
+}
+
+.post-list-title,
+.post-title,
+.section-title {
+	margin-top: 0;
+}
+
+.post-list-title a,
+.post-back-link,
+.post-cancel-link {
+	color: #000;
+}
+
+.post-list-title a {
+	text-decoration: none;
+}
+
+.post-back-link {
+	display: inline-block;
+	margin-bottom: 20px;
+}
+
+.notice-card {
+	border: 1px solid #c8c8c8;
+	background-color: #f8f8f8;
+	padding: 20px;
+}
+
+.notice-card-text {
+	margin-bottom: 0;
+}
+
+.post-article {
+	padding: 20px;
+}
+
+.post-description {
+	white-space: pre-wrap;
+}
+
+.post-edit-form {
+	padding: 16px;
+	margin-top: 20px;
+}
+
+.post-edit-input,
+.post-textarea,
+.post-input {
+	width: 100%;
+}
+
+.post-edit-input {
+	max-width: 420px;
+}
+
+.post-textarea {
+	min-height: 140px;
+}
+
+.delete-form {
+	margin-top: 12px;
+}
+
+.delete-button {
+	color: red;
+	cursor: pointer;
+}

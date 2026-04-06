@@ -1,106 +1,76 @@
+<?php
+
+// get session name
+$session_name = session_name();
+
+// get session id
+if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
+  session_id($_GET[$session_name]);
+} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
+  session_id($_POST[$session_name]);
+}
+
+session_start();
+
+//build url params
+$session_query = $session_name . '=' . urlencode(session_id());
+
+// handle logout
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+  $_SESSION = [];
+  session_destroy();
+  header('Location: authentication/login.php');
+  exit;
+}
+
+// read user info
+$user_name = $_SESSION['username'] ?? null;
+$is_logged_in = isset($_SESSION['user_id']);
+
+// build links
+$posts_link = 'posts/post.php?' . $session_query;
+$login_link = 'authentication/login.php?' . $session_query;
+$logout_action = 'index.php?' . $session_query;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/home.css">
+  <title>Science Snap</title>
 </head>
-<body
-  style="
-    margin: 0;
-    min-height: 100vh;
-    position: relative;
-  "
->
-    <header
-      style="
-        background-color: #e6e6e6;
-        padding: 14px 16px;
-        text-align: center;
-        position: relative;
-      "
-    >
-      <h1 style="margin: 0; font-size: 1.5rem">Science Snap</h1>
-      <div
-        style="
-          position: absolute;
-          right: 16px;
-          top: 50%;
-          transform: translateY(-50%);
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        "
-      >
+<body class="home-body">
+    <header class="site-header">
+      <h1 class="site-title">Science Snap</h1>
+      <div class="site-nav">
         <?php if ($user_name): ?>
-        <span
-          style="
-            color: #333;
-            font-size: 0.95rem;
-            font-weight: 600;
-          "
-          >Current User: <?php echo htmlspecialchars($user_name); ?></span
-        >
+        <span class="current-user">Current User: <?php echo htmlspecialchars($user_name); ?></span>
         <?php endif; ?>
         <a
-          href="posts/post.php"
-          style="
-            display: inline-block;
-            padding: 6px 12px;
-            border: 1px solid #666;
-            background-color: #dcdcdc;
-            color: #000;
-            text-decoration: none;
-            border-radius: 4px;
-          "
+          href="<?php echo htmlspecialchars($posts_link); ?>"
+          class="nav-link nav-link-primary"
           >Posts</a
         >
         <?php if ($is_logged_in): ?>
-        <form action="post.php" method="post" style="margin: 0;">
+        <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
+          <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
           <input type="hidden" name="logout" value="1" />
-          <button
-            type="submit"
-            style="
-              display: inline-block;
-              padding: 6px 12px;
-              border: 1px solid #666;
-              background-color: #f3f3f3;
-              color: #000;
-              text-decoration: none;
-              border-radius: 4px;
-              cursor: pointer;
-            "
-          >Logout</button>
+          <button type="submit" class="logout-button">Logout</button>
         </form>
         <?php else: ?>
         <a
-          href="/authentication/login.php"
-          style="
-            display: inline-block;
-            padding: 6px 12px;
-            border: 1px solid #666;
-            background-color: #f3f3f3;
-            color: #000;
-            text-decoration: none;
-            border-radius: 4px;
-          "
+          href="<?php echo htmlspecialchars($login_link); ?>"
+          class="nav-link nav-link-secondary"
           >Login</a
         >
         <?php endif; ?>
       </div>
     </header>
     
-    <div
-      id="title"
-      style="
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        width: 100%;
-      "
-    >
+    <div id="title" class="home-hero">
         <h1>Science Snap</h1>
         <h2>Research in a Snap</h2>
         <h3>Zak Yarwood</h3>
