@@ -1,19 +1,6 @@
 <?php
 
-// get session name
-$session_name = session_name();
-
-// get session id
-if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
-    session_id($_GET[$session_name]);
-} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
-    session_id($_POST[$session_name]);
-}
-
 session_start();
-
-// build url params
-$session_query = $session_name . '=' . urlencode(session_id());
 
 // get form input
 $username = filter_input(INPUT_POST, 'register_username', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -64,7 +51,7 @@ if (!empty($errors)) {
         // put array of errors into single string
         'message' => implode(' ', $errors)
     ];
-    header('Location: login.php?' . $session_query);
+    header('Location: login.php');
     exit;
 }
 
@@ -91,7 +78,7 @@ if ($email_count > 0) {
         'type' => 'error',
         'message' => 'An account with this email already exists.'
     ];
-    header('Location: login.php?' . $session_query);
+    header('Location: login.php');
     exit;
 }
 
@@ -106,7 +93,7 @@ if ($username_count > 0) {
         'type' => 'error',
         'message' => 'An account with this username already exists.'
     ];
-    header('Location: login.php?' . $session_query);
+    header('Location: login.php');
     exit;
 }
 
@@ -122,23 +109,20 @@ $success = $stmt->execute($create_user_args);
 if ($success) {
     session_regenerate_id(true);
 
-    // need to rebuild url params because new session id
-    $session_query = $session_name . '=' . urlencode(session_id());
-
     // store user info in session
     $_SESSION['user_id'] = $dbh->lastInsertId();
     $_SESSION['username'] = $username;
     $_SESSION['email'] = $email;
 
     // redirect to posts page
-    header('Location: ../posts/post.php?' . $session_query);
+    header('Location: ../posts/post.php');
     exit;
 } else {
     $_SESSION['register_feedback'] = [
         'type' => 'error',
         'message' => 'Something went wrong. Please try again.'
     ];
-    header('Location: login.php?' . $session_query);
+    header('Location: login.php');
     exit;
 }
 

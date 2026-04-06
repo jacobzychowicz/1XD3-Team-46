@@ -1,19 +1,6 @@
 <?php 
 
-// get session name
-$session_name = session_name();
-
-// get session id
-if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
-    session_id($_GET[$session_name]);
-} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
-    session_id($_POST[$session_name]);
-}
-
 session_start();
-
-// build url query
-$session_query = $session_name . '=' . urlencode(session_id());
 
 // PDO values
 $host = 'localhost';
@@ -31,7 +18,7 @@ if (!$user_id) {
         'type' => 'error',
         'message' => 'You must be logged in to delete posts.'
     ];
-    header('Location: ../authentication/login.php?' . $session_query);
+    header('Location: ../authentication/login.php');
     exit;
 }
 
@@ -41,7 +28,7 @@ if (!$post_id) {
         'type' => 'error',
         'message' => 'Post ID is required.'
     ];
-    header('Location: post.php?' . $session_query);
+    header('Location: post.php');
     exit;
 }
 
@@ -61,7 +48,7 @@ try {
             'type' => 'error',
             'message' => 'You can only delete your own posts.'
         ];
-        header('Location: display_post.php?id=' . urlencode((string) $post_id) . '&' . $session_query);
+        header('Location: display_post.php?id=' . urlencode((string) $post_id));
         exit;
     }
 
@@ -74,10 +61,10 @@ try {
         'type' => 'error',
         'message' => 'Unable to delete post.'
     ];
-    header('Location: display_post.php?id=' . urlencode((string) $post_id) . '&' . $session_query);
+    header('Location: display_post.php?id=' . urlencode((string) $post_id));
     exit;
 }
 
 // return back to posts index if post deletes
-header('Location: post.php?' . $session_query);
+header('Location: post.php');
 exit;

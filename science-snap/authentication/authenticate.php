@@ -1,19 +1,6 @@
 <?php
 
-// get session name
-$session_name = session_name();
-
-// get session id
-if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
-    session_id($_GET[$session_name]);
-} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
-    session_id($_POST[$session_name]);
-}
-
 session_start();
-
-// build url params
-$session_query = $session_name . '=' . urlencode(session_id());
 
 // get form data
 $email = filter_input(INPUT_POST, 'login_email', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -39,7 +26,7 @@ if (!empty($errors)) {
         'type' => 'error',
         'message' => implode(' ', $errors)
     ];
-    header('Location: login.php?' . $session_query);
+    header('Location: login.php');
     exit;
 }
 
@@ -68,7 +55,7 @@ if (!$user) {
         'type' => 'error',
         'message' => 'No account found with that email.'
     ];
-    header('Location: login.php?' . $session_query);
+    header('Location: login.php');
     exit;
 }
 
@@ -78,15 +65,12 @@ if (!password_verify($password, $user['password_hash'])) {
         'type' => 'error',
         'message' => 'Incorrect password.'
     ];
-    header('Location: login.php?' . $session_query);
+    header('Location: login.php');
     exit;
 }
 
 // regenerate session
 session_regenerate_id(true);
-
-// new session id
-$session_query = $session_name . '=' . urlencode(session_id());
 
 // store user info in session
 $_SESSION['user_id'] = $user['id'];
@@ -94,7 +78,7 @@ $_SESSION['username'] = $user['username'];
 $_SESSION['email'] = $user['email'];
 
 // redirect to posts
-header('Location: ../posts/post.php?' . $session_query);
+header('Location: ../posts/post.php');
 exit;
 
 ?>

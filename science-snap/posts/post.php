@@ -1,19 +1,6 @@
 <?php
 
-// get session name
-$session_name = session_name();
-
-// get session id
-if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
-    session_id($_GET[$session_name]);
-} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
-    session_id($_POST[$session_name]);
-}
-
 session_start();
-
-// build query string for url param
-$session_query = $session_name . '=' . urlencode(session_id());
 
 // handle logout
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
@@ -61,10 +48,10 @@ try {
 }
 
 // build links
-$posts_link = 'post.php?' . $session_query;
-$create_post_link = 'add_post.php?' . $session_query;
-$login_link = '../authentication/login.php?' . $session_query;
-$logout_action = 'post.php?' . $session_query;
+$posts_link = 'post.php';
+$create_post_link = 'add_post.php';
+$login_link = '../authentication/login.php';
+$logout_action = 'post.php';
 ?>
 
 <!doctype html>
@@ -98,7 +85,6 @@ $logout_action = 'post.php?' . $session_query;
         <?php endif; ?>
         <?php if ($is_logged_in): ?>
           <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
-            <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
           <input type="hidden" name="logout" value="1" />
           <button type="submit" class="logout-button">Logout</button>
         </form>
@@ -137,7 +123,7 @@ $logout_action = 'post.php?' . $session_query;
     <!-- render all posts -->
     <div id="postContainer">
       <?php foreach ($posts as $post): ?>
-      <?php $post_link = 'display_post.php?id=' . urlencode((string) $post['id']) . '&' . $session_query; ?>
+      <?php $post_link = 'display_post.php?id=' . urlencode((string) $post['id']); ?>
       <div class="post-list-item">
         <h3 class="post-list-title">
           <a href="<?php echo htmlspecialchars($post_link); ?>">

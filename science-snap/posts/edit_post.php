@@ -1,20 +1,7 @@
 <?php 
 
-// get session name
-$session_name = session_name();
-
-// get session id
-if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
-    session_id($_GET[$session_name]);
-} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
-    session_id($_POST[$session_name]);
-}
-
 // start session
 session_start();
-
-// build url params
-$session_query = $session_name . '=' . urlencode(session_id());
 
 // PDO data
 $host = 'localhost';
@@ -32,7 +19,7 @@ if (!$user_id) {
         'type' => 'error',
         'message' => 'You must be logged in to edit posts.'
     ];
-    header('Location: ../authentication/login.php?' . $session_query);
+    header('Location: ../authentication/login.php');
     exit;
 }
 
@@ -42,7 +29,7 @@ if (!$post_id) {
         'type' => 'error',
         'message' => 'Post ID is required.'
     ];
-    header('Location: post.php?' . $session_query);
+    header('Location: post.php');
     exit;
 }
 
@@ -56,7 +43,7 @@ if ($title === '') {
         'type' => 'error',
         'message' => 'Post title is required.'
     ];
-    header('Location: display_post.php?id=' . urlencode((string) $post_id) . '&' . $session_query);
+    header('Location: display_post.php?id=' . urlencode((string) $post_id));
     exit;
 }
 
@@ -93,5 +80,5 @@ try {
 }
 
 // redirect to post page
-header('Location: display_post.php?id=' . urlencode((string) $post_id) . '&' . $session_query);
+header('Location: display_post.php?id=' . urlencode((string) $post_id));
 exit;

@@ -1,19 +1,6 @@
 <?php
 
-// get session name
-$session_name = session_name();
-
-// get session id
-if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
-  session_id($_GET[$session_name]);
-} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
-  session_id($_POST[$session_name]);
-}
-
 session_start();
-
-// build url params
-$session_query = $session_name . '=' . urlencode(session_id());
 
 // handle logout
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
@@ -70,12 +57,12 @@ unset($_SESSION['post_feedback']);
   }
 
 // build links
-$posts_link = 'post.php?' . $session_query;
-$create_post_link = 'add_post.php?' . $session_query;
-$login_link = '../authentication/login.php?' . $session_query;
-$logout_action = 'display_post.php?id=' . urlencode((string) $post_id) . '&' . $session_query;
-$edit_action = 'edit_post.php?' . $session_query;
-$delete_action = 'delete_post.php?' . $session_query;
+$posts_link = 'post.php';
+$create_post_link = 'add_post.php';
+$login_link = '../authentication/login.php';
+$logout_action = 'display_post.php?id=' . urlencode((string) $post_id);
+$edit_action = 'edit_post.php';
+$delete_action = 'delete_post.php';
 ?>
 
 <!doctype html>
@@ -105,7 +92,6 @@ $delete_action = 'delete_post.php?' . $session_query;
           >Create Post</a
         >
         <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
-          <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
           <input type="hidden" name="logout" value="1" />
           <button type="submit" class="logout-button">Logout</button>
         </form>
@@ -150,7 +136,6 @@ $delete_action = 'delete_post.php?' . $session_query;
         <?php if (!empty($post['is_owner'])): ?>
         <!-- edit post from -->
         <form action="<?php echo htmlspecialchars($edit_action); ?>" method="post" class="post-edit-form">
-          <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
           <input type="hidden" name="id" value="<?php echo htmlspecialchars((string) $post['id']); ?>" />
           <h3 class="section-title">Edit Post</h3>
           <label for="editName">Title</label><br />
@@ -167,7 +152,6 @@ $delete_action = 'delete_post.php?' . $session_query;
 
         <!-- delete post form -->
         <form action="<?php echo htmlspecialchars($delete_action); ?>" method="post" class="delete-form">
-          <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
           <input type="hidden" name="id" value="<?php echo htmlspecialchars((string) $post['id']); ?>" />
           <button type="submit" class="delete-button">Delete Post</button>
         </form>

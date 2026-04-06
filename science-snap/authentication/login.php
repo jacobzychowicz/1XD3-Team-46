@@ -1,20 +1,7 @@
 <?php
 
-// get session name
-$session_name = session_name();
-
-// get session id based on method used
-if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
-  session_id($_GET[$session_name]);
-} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
-  session_id($_POST[$session_name]);
-}
-
 // start session
 session_start();
-
-// build url params
-$session_query = $session_name . '=' . urlencode(session_id());
 
 // handle logout, redirect to login page
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
@@ -34,11 +21,11 @@ $register_feedback = $_SESSION['register_feedback'] ?? null;
 unset($_SESSION['login_feedback'], $_SESSION['register_feedback']);
 
 // build links
-$posts_link = '../posts/post.php?' . $session_query;
-$login_link = '../authentication/login.php?' . $session_query;
-$login_action = 'authenticate.php?' . $session_query;
-$register_action = 'create_user.php?' . $session_query;
-$logout_action = 'login.php?' . $session_query;
+$posts_link = '../posts/post.php';
+$login_link = '../authentication/login.php';
+$login_action = 'authenticate.php';
+$register_action = 'create_user.php';
+$logout_action = 'login.php';
 ?>
 
 <!DOCTYPE html>
@@ -66,8 +53,6 @@ $logout_action = 'login.php?' . $session_query;
       <!-- if user logged in show logout button -->
       <?php if ($is_logged_in): ?>
         <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
-        <!-- hidden input to send session info to logout -->
-          <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
           <input type="hidden" name="logout" value="1" />
           <button type="submit" class="logout-button">Logout</button>
         </form>
@@ -85,8 +70,6 @@ $logout_action = 'login.php?' . $session_query;
     <section class="auth-section">
       <h2>Login</h2>
       <form action="<?php echo htmlspecialchars($login_action); ?>" method="post">
-        <!--hidden session info input -->
-        <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
         <div>
           <label for="login-email">Email</label><br>
           <input type="email" id="login-email" name="login_email" maxlength="255" autocomplete="email" required>
@@ -108,7 +91,6 @@ $logout_action = 'login.php?' . $session_query;
     <section class="auth-section">
       <h2>Create an Account</h2>
       <form action="<?php echo htmlspecialchars($register_action); ?>" method="post">
-        <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
         <div>
           <label for="register-username">Username</label><br>
           <input type="text" id="register-username" name="register_username" minlength="3" maxlength="50" pattern="[A-Za-z0-9_]{3,50}" title="Use 3 to 50 characters: letters, numbers, and underscores only." autocomplete="username" required>

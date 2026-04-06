@@ -1,19 +1,6 @@
 <?php
 
-// get session name
-$session_name = session_name();
-
-// get session id
-if (isset($_GET[$session_name]) && $_GET[$session_name] !== '') {
-    session_id($_GET[$session_name]);
-} elseif (isset($_POST[$session_name]) && $_POST[$session_name] !== '') {
-    session_id($_POST[$session_name]);
-}
-
 session_start();
-
-// build url params
-$session_query = $session_name . '=' . urlencode(session_id());
 
 // handle logout
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
@@ -29,7 +16,7 @@ $user_name = $_SESSION['username'] ?? null;
 
 // redirect to login if user is not logged in (just in case lol)
 if (!$user_id) {
-    header('Location: ../authentication/login.php?' . $session_query);
+    header('Location: ../authentication/login.php');
     exit;
 }
 
@@ -61,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['logout'])) {
             ]);
 
             // redirect to the new post
-            header('Location: post.php?' . $session_query);
+            header('Location: post.php');
             exit;
         } catch (PDOException $e) {
             $feedback_message = 'Unable to create post.';
@@ -70,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['logout'])) {
 }
 
 // links
-$posts_link = 'post.php?' . $session_query;
-$create_post_link = 'add_post.php?' . $session_query;
-$logout_action = 'add_post.php?' . $session_query;
+$posts_link = 'post.php';
+$create_post_link = 'add_post.php';
+$logout_action = 'add_post.php';
 ?>
 <!doctype html>
 <html>
@@ -98,7 +85,6 @@ $logout_action = 'add_post.php?' . $session_query;
                     >Create Post</a
                 >
                 <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
-                    <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
                     <input type="hidden" name="logout" value="1" />
                     <button type="submit" class="logout-button">Logout</button>
                 </form>
@@ -109,7 +95,6 @@ $logout_action = 'add_post.php?' . $session_query;
         <main class="page-main page-main-narrow">
             <h2>Create Post</h2>
             <form action="<?php echo htmlspecialchars($create_post_link); ?>" method="post">
-                <input type="hidden" name="<?php echo htmlspecialchars($session_name); ?>" value="<?php echo htmlspecialchars(session_id()); ?>" />
                 <label for="postName">Post name:</label><br />
                 <input id="postName" name="title" placeholder="Post Title" type="text" value="<?php echo htmlspecialchars($_POST['title'] ?? ''); ?>" />
                 <br /><br />
