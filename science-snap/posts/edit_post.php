@@ -48,7 +48,7 @@ if ($title === '') {
 
 // update post
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $stmt = $pdo->prepare('UPDATE posts SET title = :title, description = :description WHERE id = :id AND user_id = :user_id');
