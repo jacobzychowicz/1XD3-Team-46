@@ -27,18 +27,25 @@ $post_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 // store post and error info
 $post = null;
 $error_message = null;
+
+// get post feedback from session and remove it
 $post_feedback = $_SESSION['post_feedback'] ?? null;
 unset($_SESSION['post_feedback']);
 
+// get comment feedback from session and remove it
 $comment_feedback = $_SESSION['comment_feedback'] ?? null;
 unset($_SESSION['comment_feedback']);
 
+// will hold the comments tree for this post
 $comments_by_parent = [];
 
 try {
+  // connect to database using PDO
   $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+  // fetch the single post by id, join with users to get the author username
+  // also flag if the current logged in user owns this post
   $stmt = $pdo->prepare(
     'SELECT posts.*, users.username,
         CASE WHEN posts.user_id = :current_user_id THEN 1 ELSE 0 END AS is_owner
@@ -46,6 +53,8 @@ try {
      LEFT JOIN users ON posts.user_id = users.id
      WHERE posts.id = :post_id'
   );
+
+  //fetch the isngle post row
   $stmt->execute([
     ':current_user_id' => $current_user_id ?? 0,
     ':post_id' => $post_id,
@@ -53,6 +62,7 @@ try {
 
   $post = $stmt->fetch(PDO::FETCH_ASSOC);
 
+  // if no post was found set error message
   if (!$post) {
     $error_message = 'Post not found.';
   } else {
@@ -79,6 +89,7 @@ $delete_action = 'delete_post.php';
   <link rel="stylesheet" href="../css/common.css">
   <link rel="stylesheet" href="../css/posts.css">
   <link rel="stylesheet" href="../css/comments.css">
+   <!-- comments.js handles loading comments dynamically via AJAX -->
   <script src="../comments/comments.js" defer></script>
   <title>View Post</title>
   </head>
@@ -142,6 +153,7 @@ $delete_action = 'delete_post.php';
           Posted on: <?php echo htmlspecialchars($post['created_at']); ?>
         </small>
 
+        <!-- only show edit and delete if the current user owns this post -->
         <?php if (!empty($post['is_owner'])): ?>
         <!-- edit post from -->
         <form action="<?php echo htmlspecialchars($edit_action); ?>" method="post" class="post-edit-form">
@@ -167,6 +179,7 @@ $delete_action = 'delete_post.php';
         <?php endif; ?>
       </article>
 
+      <!-- load the comments section template -->
       <?php include __DIR__ . '/../comments/comments_section.php'; ?>
       <?php endif; ?>
     </main>

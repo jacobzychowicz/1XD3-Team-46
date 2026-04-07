@@ -25,20 +25,43 @@ $password = '';
 $post_feedback = $_SESSION['post_feedback'] ?? null;
 unset($_SESSION['post_feedback']);
 
+// get search query from URL parameter
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS) ?? '';
+
 $posts = [];
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
 
+    // If user hs typed something run thie searching query
+    if ($search !== '') {
     // get all posts with author username and a flag indicating if the current user owns each post
     $stmt = $pdo->prepare(
         'SELECT posts.*, users.username,
                 CASE WHEN posts.user_id = :current_user_id THEN 1 ELSE 0 END AS is_owner
          FROM posts
          LEFT JOIN users ON posts.user_id = users.id
-         ORDER BY posts.created_at DESC'
+         WHERE posts.title LIKE :search OR posts.description LIKE :search
+         ORDER BY posts.created_at DESC LIMIT 50'
     );
-    $stmt->execute([':current_user_id' => $current_user_id ?? 0]);
+
+    // execute with current user id and search term wrapped in % for partial matching for like command
+    $stmt->execute([':current_user_id' => $current_user_id ?? 0, ':search' => '%' . $search . '%']);
+
+    }
+    // if there is no search term it returns all the post
+        else {
+        $stmt = $pdo->prepare(
+            'SELECT posts.*, users.username,
+                    CASE WHEN posts.user_id = :current_user_id THEN 1 ELSE 0 END AS is_owner
+             FROM posts
+             LEFT JOIN users ON posts.user_id = users.id
+             ORDER BY posts.created_at DESC LIMIT 50'
+        );
+        // execute with just the current user id
+        $stmt->execute([':current_user_id' => $current_user_id ?? 0]);
+        }
+
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $post_feedback = [
@@ -113,6 +136,12 @@ $logout_action = 'post.php';
     </div>
     <?php endif; ?>
 
+      <!-- search bar -->
+    <form action="post.php" method="get">
+      <input type="text" name="search" placeholder="Search posts..." value="<?php echo htmlspecialchars($search); ?>" />
+      <button type="submit">Search</button>
+    </form>
+
     <!-- error messages from posts -->
     <?php if ($post_feedback): ?>
     <p class="post-feedback <?php echo $post_feedback['type'] === 'error' ? 'feedback-error' : 'feedback-success'; ?>">
@@ -143,3 +172,4 @@ $logout_action = 'post.php';
     </div>
   </body>
 </html>
+
