@@ -1,4 +1,4 @@
-// show / hide reply box when you click Reply or Cancel
+// show/hide reply form
 (function () {
   var toggles = document.querySelectorAll('.comment-reply-toggle');
   for (var i = 0; i < toggles.length; i++) {

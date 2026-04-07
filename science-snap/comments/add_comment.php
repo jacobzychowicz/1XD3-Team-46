@@ -2,13 +2,13 @@
 
 session_start();
 
-// wrong request -> back to posts list
+// wrong request - go BACK
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['add_comment'])) {
   header('Location: ../posts/post.php');
   exit;
 }
 
-// read stuff from the form and session
+// get form + session data
 $user_id = $_SESSION['user_id'] ?? null;
 $post_id = filter_input(INPUT_POST, 'post_id', FILTER_VALIDATE_INT);
 $content = trim($_POST['comment_content'] ?? '');
@@ -18,13 +18,13 @@ if ($parent_raw !== '' && $parent_raw !== null) {
   $parent_id = filter_var($parent_raw, FILTER_VALIDATE_INT);
 }
 
-// PDO values (same idea as other pages)
+// PDO vals
 $host = 'localhost';
 $dbname = 'science_snap';
 $db_username = 'root';
 $db_password = '';
 
-// have to be logged in
+// must be logged in
 if (!$user_id) {
   $_SESSION['comment_feedback'] = [
     'type' => 'error',
@@ -38,7 +38,7 @@ if (!$user_id) {
   exit;
 }
 
-// need a real post and some text; parent id cant be garbage
+// basic validation
 if (!$post_id || $content === '' || $parent_id === false) {
   $_SESSION['comment_feedback'] = [
     'type' => 'error',
@@ -56,7 +56,7 @@ try {
   $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $db_username, $db_password);
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-  // make sure the post exists
+  // check post exists
   $stmt = $pdo->prepare('SELECT id FROM posts WHERE id = :id LIMIT 1');
   $stmt->execute([':id' => $post_id]);
   if (!$stmt->fetchColumn()) {
@@ -68,7 +68,7 @@ try {
     exit;
   }
 
-  // if replying, make sure the parent comment is on this post
+  // if reply, check parent comment exists on this post
   if ($parent_id !== null) {
     $stmt = $pdo->prepare(
       'SELECT id FROM comments WHERE id = :cid AND post_id = :pid LIMIT 1'

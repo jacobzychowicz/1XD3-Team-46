@@ -1,5 +1,5 @@
 <?php
-// where the form gets sent
+// comment form action
 $comment_action = '../comments/add_comment.php';
 ?>
 

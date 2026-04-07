@@ -1,6 +1,6 @@
 <?php
 
-// load comments for one post and sort them into groups by parent id (for threading)
+// load comments for one post and group by parent id FOR THREADING
 function comments_load_tree($pdo, $post_id)
 {
   $stmt = $pdo->prepare(
@@ -31,7 +31,7 @@ function comments_load_tree($pdo, $post_id)
   return $comments_by_parent;
 }
 
-// print one branch of the tree (root uses key "root", then comment ids)
+// print comment thread
 function comments_print_tree($parent_key, $comments_by_parent, $post, $is_logged_in, $comment_action)
 {
   if (empty($comments_by_parent[$parent_key])) {
