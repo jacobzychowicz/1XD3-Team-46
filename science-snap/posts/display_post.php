@@ -40,7 +40,7 @@ $comments_by_parent = [];
 
 try {
   // connect to database using PDO
-  $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $username, $password);
+  $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $db_username, $db_password);
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
   // fetch the single post by id, join with users to get the author username

@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['logout'])) {
         $feedback_message = 'Post title is required.';
     } else {
         try {
-            $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $username, $password);
+            $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $db_username, $db_password);
 
             $stmt = $pdo->prepare('INSERT INTO posts (title, description, user_id) VALUES (:title, :description, :user_id)');
             $stmt->execute([

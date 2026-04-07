@@ -30,7 +30,7 @@ $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS) ?? ''
 $posts = [];
 
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $db_username, $db_password);
 
     // If user hs typed something run thie searching query
     if ($search !== '') {

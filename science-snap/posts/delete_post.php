@@ -33,7 +33,7 @@ if (!$post_id) {
 
 // delete the post
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $db_username, $db_password);
 
     $stmt = $pdo->prepare('DELETE FROM posts WHERE id = :id AND user_id = :user_id');
     $stmt->execute([
