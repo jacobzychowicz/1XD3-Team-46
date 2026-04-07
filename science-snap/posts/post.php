@@ -16,10 +16,9 @@ $current_user_id = $_SESSION['user_id'] ?? null;
 $is_logged_in = $current_user_id !== null;
 
 // pdo vals
-$host = 'localhost';
-$dbname = 'science_snap';
-$username = 'root';
-$password = '';
+$dbname = 'zychowj_db';
+$db_username = 'zychowj_local';
+$db_password = '10UT8Z{P';
 
 // get post feedback and remove it from session
 $post_feedback = $_SESSION['post_feedback'] ?? null;

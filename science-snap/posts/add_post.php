@@ -21,10 +21,9 @@ if (!$user_id) {
 }
 
 // PDO values
-$host = 'localhost';
-$dbname = 'science_snap';
-$username = 'root';
-$password = '';
+$dbname = 'zychowj_db';
+$db_username = 'zychowj_local';
+$db_password = '10UT8Z{P';
 
 // create post feedback
 $feedback_message = '';

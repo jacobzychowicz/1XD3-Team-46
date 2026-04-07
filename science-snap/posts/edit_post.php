@@ -4,10 +4,9 @@
 session_start();
 
 // PDO data
-$host = 'localhost';
-$dbname = 'science_snap';
-$username = 'root';
-$password = '';
+$dbname = 'zychowj_db';
+$db_username = 'zychowj_local';
+$db_password = '10UT8Z{P';
 
 // get user and post info
 $user_id = $_SESSION['user_id'] ?? null;

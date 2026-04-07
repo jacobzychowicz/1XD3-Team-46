@@ -11,10 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
 }
 
 // PDO values
-$host = 'localhost';
-$dbname = 'science_snap';
-$username = 'root';
-$password = '';
+$dbname = 'zychowj_db';
+$db_username = 'zychowj_local';
+$db_password = '10UT8Z{P';
 
 // get user info
 $user_name = $_SESSION['username'] ?? null;

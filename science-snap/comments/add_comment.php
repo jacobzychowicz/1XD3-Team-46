@@ -19,10 +19,9 @@ if ($parent_raw !== '' && $parent_raw !== null) {
 }
 
 // PDO vals
-$host = 'localhost';
-$dbname = 'science_snap';
-$db_username = 'root';
-$db_password = '';
+$dbname = 'zychowj_db';
+$db_username = 'zychowj_local';
+$db_password = '10UT8Z{P';
 
 // must be logged in
 if (!$user_id) {

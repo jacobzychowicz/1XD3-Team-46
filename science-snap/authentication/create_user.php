@@ -56,9 +56,9 @@ if (!empty($errors)) {
 }
 
 // PDO values
-$dbname = 'science_snap';
-$db_username = 'root';
-$db_password = '';
+$dbname = 'zychowj_db';
+$db_username = 'zychowj_local';
+$db_password = '10UT8Z{P';
 
 // connect to db
 try {
