@@ -10,15 +10,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
     exit;
 }
 
+
 // get user info from session
 $user_name = $_SESSION['username'] ?? null;
 $current_user_id = $_SESSION['user_id'] ?? null;
 $is_logged_in = $current_user_id !== null;
+$is_admin = $_SESSION['is_admin'] ?? 0;
 
-// pdo vals
-$dbname = 'zychowj_db';
-$db_username = 'zychowj_local';
-$db_password = '10UT8Z{P';
+
+// Include centralized database config
+require_once __DIR__ . '/../config/db.php';
 
 // get post feedback and remove it from session
 $post_feedback = $_SESSION['post_feedback'] ?? null;
@@ -30,44 +31,44 @@ $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS) ?? ''
 $posts = [];
 
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $db_username, $db_password);
+  $pdo = getDBConnection();
 
-    // If user hs typed something run thie searching query
-    if ($search !== '') {
+  // If user has typed something run the searching query
+  if ($search !== '') {
     // get all posts with author username and a flag indicating if the current user owns each post
     $stmt = $pdo->prepare(
-        'SELECT posts.*, users.username,
-                CASE WHEN posts.user_id = :current_user_id THEN 1 ELSE 0 END AS is_owner
-         FROM posts
-         LEFT JOIN users ON posts.user_id = users.id
-         WHERE posts.title LIKE :search OR posts.description LIKE :search
-         ORDER BY posts.created_at DESC LIMIT 50'
+      'SELECT posts.*, users.username,
+          CASE WHEN posts.user_id = :current_user_id THEN 1 ELSE 0 END AS is_owner
+       FROM posts
+       LEFT JOIN users ON posts.user_id = users.id
+       WHERE posts.title LIKE :search OR posts.description LIKE :search
+       ORDER BY posts.created_at DESC LIMIT 50'
     );
 
     // execute with current user id and search term wrapped in % for partial matching for like command
     $stmt->execute([':current_user_id' => $current_user_id ?? 0, ':search' => '%' . $search . '%']);
 
-    }
-    // if there is no search term it returns all the post
-        else {
-        $stmt = $pdo->prepare(
-            'SELECT posts.*, users.username,
-                    CASE WHEN posts.user_id = :current_user_id THEN 1 ELSE 0 END AS is_owner
-             FROM posts
-             LEFT JOIN users ON posts.user_id = users.id
-             ORDER BY posts.created_at DESC LIMIT 50'
-        );
-        // execute with just the current user id
-        $stmt->execute([':current_user_id' => $current_user_id ?? 0]);
-        }
+  } else {
+    // if there is no search term it returns all the posts
+    $stmt = $pdo->prepare(
+      'SELECT posts.*, users.username,
+          CASE WHEN posts.user_id = :current_user_id THEN 1 ELSE 0 END AS is_owner
+       FROM posts
+       LEFT JOIN users ON posts.user_id = users.id
+       ORDER BY posts.created_at DESC LIMIT 50'
+    );
+    // execute with just the current user id
+    $stmt->execute([':current_user_id' => $current_user_id ?? 0]);
+  }
 
-    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    $post_feedback = [
-        'type' => 'error',
-        'message' => 'Unable to load posts.'
-    ];
+  $post_feedback = [
+    'type' => 'error',
+    'message' => 'Unable to load posts.'
+  ];
 }
+
 
 // build links
 $posts_link = 'post.php';
@@ -84,6 +85,7 @@ $logout_action = 'post.php';
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/posts.css">
     <title>Posts</title>
+    <script src="../validation/form-validation.js" defer></script>
   </head>
 
   <body>
@@ -98,12 +100,12 @@ $logout_action = 'post.php';
           class="nav-link nav-link-primary"
           >Posts</a
         >
-        <?php if ($is_logged_in): ?>
+
+        <?php if ($is_logged_in && $is_admin): ?>
         <a
           href="<?php echo htmlspecialchars($create_post_link); ?>"
           class="nav-link nav-link-secondary"
-          >Create Post</a
-        >
+          >Create Post</a>
         <?php endif; ?>
         <?php if ($is_logged_in): ?>
           <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
@@ -120,8 +122,9 @@ $logout_action = 'post.php';
       </div>
     </header>
 
-    <!-- show create post link if user is logged in -->
-    <?php if ($is_logged_in): ?>
+
+    <!-- show create post link if user is admin -->
+    <?php if ($is_logged_in && $is_admin): ?>
     <div class="create-banner">
       <span>Create a new post</span>
       <a
@@ -129,7 +132,7 @@ $logout_action = 'post.php';
         class="banner-action"
       >Create Post</a>
     </div>
-    <?php else: ?>
+    <?php elseif (!$is_logged_in): ?>
     <div class="info-banner">
       Log in to create posts and edit your own posts.
     </div>
@@ -162,7 +165,6 @@ $logout_action = 'post.php';
         <a href="<?php echo htmlspecialchars($post_link); ?>">View Post</a>
         <br>
         <small>
-          ID: <?php echo htmlspecialchars((string) $post['id']); ?> |
           Posted by: <?php echo htmlspecialchars($post['username'] ?? 'Unknown'); ?> |
           Posted on: <?php echo htmlspecialchars($post['created_at']); ?>
         </small>

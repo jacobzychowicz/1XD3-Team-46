@@ -10,20 +10,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
     exit;
 }
 
+
 // get user info from session
 $user_id = $_SESSION['user_id'] ?? null;
 $user_name = $_SESSION['username'] ?? null;
+$is_admin = $_SESSION['is_admin'] ?? 0;
+
 
 // redirect to login if user is not logged in (just in case lol)
 if (!$user_id) {
     header('Location: ../authentication/login.php');
     exit;
 }
+// Only admins can access this page
+if (!$is_admin) {
+    header('Location: post.php');
+    exit;
+}
 
-// PDO values
-$dbname = 'zychowj_db';
-$db_username = 'zychowj_local';
-$db_password = '10UT8Z{P';
+
+// Include centralized database config
+require_once __DIR__ . '/../config/db.php';
 
 // create post feedback
 $feedback_message = '';
@@ -36,8 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['logout'])) {
     if ($title === '') {
         $feedback_message = 'Post title is required.';
     } else {
+
         try {
-            $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $db_username, $db_password);
+            $pdo = getDBConnection();
 
             $stmt = $pdo->prepare('INSERT INTO posts (title, description, user_id) VALUES (:title, :description, :user_id)');
             $stmt->execute([
@@ -46,8 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['logout'])) {
                 ':user_id' => $user_id
             ]);
 
-            // redirect to the new post
-            header('Location: post.php');
+            // redirect to the new post's page
+            $new_post_id = $pdo->lastInsertId();
+            header('Location: display_post.php?id=' . urlencode((string)$new_post_id));
             exit;
         } catch (PDOException $e) {
             $feedback_message = 'Unable to create post.';
@@ -66,6 +75,7 @@ $logout_action = 'add_post.php';
         <meta charset="utf-8" />
         <link rel="stylesheet" href="../css/common.css">
         <link rel="stylesheet" href="../css/posts.css">
+        <script src="../validation/form-validation.js" defer></script>
         <title>Create Post</title>
     </head>
     <body>

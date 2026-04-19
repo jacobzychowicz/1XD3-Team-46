@@ -2,10 +2,9 @@
 
 session_start();
 
-// PDO values
-$dbname = 'zychowj_db';
-$db_username = 'zychowj_local';
-$db_password = '10UT8Z{P';
+
+// Include centralized database config
+require_once __DIR__ . '/../config/db.php';
 
 // get user and post id
 $user_id = $_SESSION['user_id'] ?? null;
@@ -31,9 +30,10 @@ if (!$post_id) {
     exit;
 }
 
+
 // delete the post
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $db_username, $db_password);
+    $pdo = getDBConnection();
 
     $stmt = $pdo->prepare('DELETE FROM posts WHERE id = :id AND user_id = :user_id');
     $stmt->execute([

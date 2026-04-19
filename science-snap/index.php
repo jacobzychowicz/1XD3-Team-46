@@ -28,6 +28,7 @@ $logout_action = 'index.php';
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/home.css">
   <title>Science Snap</title>
+  <script src="validation/form-validation.js" defer></script>
 </head>
 <body class="home-body">
     <header class="site-header">

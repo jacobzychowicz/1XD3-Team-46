@@ -3,10 +3,8 @@
 // start session
 session_start();
 
-// PDO data
-$dbname = 'zychowj_db';
-$db_username = 'zychowj_local';
-$db_password = '10UT8Z{P';
+// Include centralized database config
+require_once __DIR__ . '/../config/db.php';
 
 // get user and post info
 $user_id = $_SESSION['user_id'] ?? null;
@@ -48,7 +46,7 @@ if ($title === '') {
 
 // update post
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $db_username, $db_password);
+    $pdo = getDBConnection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $stmt = $pdo->prepare('UPDATE posts SET title = :title, description = :description WHERE id = :id AND user_id = :user_id');

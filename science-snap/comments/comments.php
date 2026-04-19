@@ -42,7 +42,6 @@ function comments_print_tree($parent_key, $comments_by_parent, $post, $is_logged
     $comment_id = (int) $comment_row['id'];
     $username = $comment_row['comment_username'] ?? 'Unknown';
     $panel_id = 'reply-panel-' . $comment_id;
-    $post_id_esc = htmlspecialchars((string) $post['id']);
     $action_esc = htmlspecialchars($comment_action);
     ?>
         <div class="comment-item">
@@ -58,7 +57,7 @@ function comments_print_tree($parent_key, $comments_by_parent, $post, $is_logged
           <div id="<?php echo htmlspecialchars($panel_id); ?>" class="comment-reply-panel" hidden>
             <form action="<?php echo $action_esc; ?>" method="post" class="comment-reply-form">
               <input type="hidden" name="add_comment" value="1" />
-              <input type="hidden" name="post_id" value="<?php echo $post_id_esc; ?>" />
+              <input type="hidden" name="post_id" value="<?php echo htmlspecialchars((string) $post['id']); ?>" />
               <input type="hidden" name="parent_comment_id" value="<?php echo htmlspecialchars((string) $comment_id); ?>" />
               <label for="reply-<?php echo htmlspecialchars((string) $comment_id); ?>">Your reply</label><br />
               <textarea id="reply-<?php echo htmlspecialchars((string) $comment_id); ?>" name="comment_content" class="post-textarea" rows="3"></textarea>

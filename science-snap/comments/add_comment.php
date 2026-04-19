@@ -18,10 +18,9 @@ if ($parent_raw !== '' && $parent_raw !== null) {
   $parent_id = filter_var($parent_raw, FILTER_VALIDATE_INT);
 }
 
-// PDO vals
-$dbname = 'zychowj_db';
-$db_username = 'zychowj_local';
-$db_password = '10UT8Z{P';
+
+// Include centralized database config
+require_once __DIR__ . '/../config/db.php';
 
 // must be logged in
 if (!$user_id) {
@@ -51,8 +50,9 @@ if (!$post_id || $content === '' || $parent_id === false) {
   exit;
 }
 
+
 try {
-  $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $db_username, $db_password);
+  $pdo = getDBConnection();
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
   // check post exists

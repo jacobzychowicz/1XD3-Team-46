@@ -1,26 +1,39 @@
+
 .comments-section {
-	margin-top: 24px;
-	padding-top: 16px;
-	border-top: 1px solid #000;
+	margin-top: 40px;
+	padding-top: 24px;
+	border-top: 2px solid #e0e0e0;
+	max-width: 800px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .comment-form,
 .comment-reply-form {
-	margin: 12px 0 16px;
+	margin: 18px 0 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
 .comments-login-hint {
 	margin: 8px 0 16px;
+	color: #888;
 }
 
 .comment-item {
-	margin: 10px 0;
-	padding: 10px;
-	border: 1px solid #000;
+	margin: 18px 0;
+	padding: 18px 20px;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	background: #fafafa;
+	box-shadow: 0 1px 6px rgba(56,142,60,0.04);
 }
 
 .comment-body {
 	margin: 0 0 8px;
+	color: #222;
+	font-size: 1.08rem;
 }
 
 .comment-reply-actions {
@@ -29,16 +42,26 @@
 
 .comment-reply-toggle {
 	cursor: pointer;
+	color: #388e3c;
+	background: none;
+	border: none;
+	font-size: 1em;
+	padding: 0 6px;
+	border-radius: 4px;
+	transition: background 0.2s;
+}
+.comment-reply-toggle:hover {
+	background: #e8f5e9;
 }
 
 .comment-reply-panel {
 	margin-top: 10px;
 	padding-top: 10px;
-	border-top: 1px dashed #c8c8c8;
+	border-top: 1px dashed #cfd8dc;
 }
 
 .comment-replies {
 	margin-top: 10px;
-	padding-left: 12px;
-	border-left: 1px solid #c8c8c8;
+	padding-left: 18px;
+	border-left: 2px solid #e0e0e0;
 }

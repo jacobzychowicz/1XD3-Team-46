@@ -10,10 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
   exit;
 }
 
-// PDO values
-$dbname = 'zychowj_db';
-$db_username = 'zychowj_local';
-$db_password = '10UT8Z{P';
+
+// Include centralized database config
+require_once __DIR__ . '/../config/db.php';
 
 // get user info
 $user_name = $_SESSION['username'] ?? null;
@@ -38,9 +37,10 @@ unset($_SESSION['comment_feedback']);
 // will hold the comments tree for this post
 $comments_by_parent = [];
 
+
 try {
   // connect to database using PDO
-  $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8", $db_username, $db_password);
+  $pdo = getDBConnection();
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
   // fetch the single post by id, join with users to get the author username
@@ -53,7 +53,7 @@ try {
      WHERE posts.id = :post_id'
   );
 
-  //fetch the isngle post row
+  //fetch the single post row
   $stmt->execute([
     ':current_user_id' => $current_user_id ?? 0,
     ':post_id' => $post_id,
@@ -91,6 +91,7 @@ $delete_action = 'delete_post.php';
    <!-- comments.js handles loading comments dynamically via AJAX -->
   <script src="../comments/comments.js" defer></script>
   <title>View Post</title>
+    <script src="../validation/form-validation.js" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -147,7 +148,6 @@ $delete_action = 'delete_post.php';
         <p class="post-description"><?php echo htmlspecialchars($post['description']); ?></p>
 
         <small>
-          ID: <?php echo htmlspecialchars((string) $post['id']); ?> |
           Posted by: <?php echo htmlspecialchars($post['username'] ?? 'Unknown'); ?> |
           Posted on: <?php echo htmlspecialchars($post['created_at']); ?>
         </small>
