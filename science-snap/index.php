@@ -38,6 +38,7 @@ $logout_action = 'index.php';
           <?php if ($user_name): ?>
           <span class="current-user">Current User: <?php echo htmlspecialchars($user_name); ?></span>
           <?php endif; ?>
+          <a href="index.php" class="nav-link">Home</a>
           <a href="about.php" class="nav-link">About</a>
           <a
             href="<?php echo htmlspecialchars($posts_link); ?>"

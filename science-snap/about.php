@@ -37,8 +37,8 @@ $logout_action = 'about.php';
         <h1 class="site-title">Science Snap</h1>
         <div class="site-nav">
           <a href="<?php echo htmlspecialchars($home_link); ?>" class="nav-link">Home</a>
-          <a href="<?php echo htmlspecialchars($posts_link); ?>" class="nav-link">Posts</a>
           <a href="about.php" class="nav-link">About</a>
+          <a href="<?php echo htmlspecialchars($posts_link); ?>" class="nav-link">Posts</a>
           <?php if ($is_logged_in): ?>
           <span class="current-user">Current User: <?php echo htmlspecialchars($user_name); ?></span>
           <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
@@ -59,7 +59,7 @@ $logout_action = 'about.php';
     <main class="about-main">
         <h1>About Zak Yarwood</h1>
         <div class="about-content">
-            <img src="images/zak.jpg" alt="Zak Yarwood" class="about-image">
+            <img src="images/zak.png" alt="Zak Yarwood" class="about-image">
             <div class="about-text">
                 <p>Hello! I'm Zak Yarwood, a first-year undergraduate student majoring in Chemical Physics at McMaster University.</p>
                 <p>This website, Science Snap, is my platform to share insights from my research journey. Whether you're a high school student exploring your interests or an undergrad navigating similar paths, I hope my experiences can help you see potential pitfalls, learn from my mistakes, and find your own way in the world of science.</p>

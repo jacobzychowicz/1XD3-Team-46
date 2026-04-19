@@ -13,8 +13,8 @@
 
 .about-image {
     width: 200px;
-    height: 200px;
-    border-radius: 50%;
+    height: auto;
+    border-radius: 25px;
     object-fit: cover;
     flex-shrink: 0;
 }
@@ -43,6 +43,6 @@
     }
     .about-image {
         width: 150px;
-        height: 150px;
+        height: auto;
     }
 }
