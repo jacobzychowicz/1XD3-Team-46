@@ -95,33 +95,37 @@ $delete_action = 'delete_post.php';
   </head>
   <body>
     <header class="site-header">
-      <h1 class="site-title">Science Snap</h1>
-      <div class="site-nav">
-        <?php if ($user_name): ?>
-        <span class="current-user">Current User: <?php echo htmlspecialchars($user_name); ?></span>
-        <?php endif; ?>
-        <a
-          href="<?php echo htmlspecialchars($posts_link); ?>"
-          class="nav-link nav-link-primary"
-          >Posts</a
-        >
-        <?php if ($is_logged_in): ?>
-        <a
-          href="<?php echo htmlspecialchars($create_post_link); ?>"
-          class="nav-link nav-link-secondary"
-          >Create Post</a
-        >
-        <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
-          <input type="hidden" name="logout" value="1" />
-          <button type="submit" class="logout-button">Logout</button>
-        </form>
-        <?php else: ?>
-        <a
-          href="<?php echo htmlspecialchars($login_link); ?>"
-          class="nav-link nav-link-secondary"
-          >Login</a
-        >
-        <?php endif; ?>
+      <div class="header-container">
+        <h1 class="site-title">Science Snap</h1>
+        <div class="site-nav">
+          <?php if ($user_name): ?>
+          <span class="current-user">Current User: <?php echo htmlspecialchars($user_name); ?></span>
+          <?php endif; ?>
+          <a href="../index.php" class="nav-link">Home</a>
+          <a href="../about.php" class="nav-link">About</a>
+          <a
+            href="<?php echo htmlspecialchars($posts_link); ?>"
+            class="nav-link"
+            >Posts</a
+          >
+          <?php if ($is_logged_in): ?>
+          <a
+            href="<?php echo htmlspecialchars($create_post_link); ?>"
+            class="nav-link"
+            >Create Post</a
+          >
+          <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
+            <input type="hidden" name="logout" value="1" />
+            <button type="submit" class="logout-button">Logout</button>
+          </form>
+          <?php else: ?>
+          <a
+            href="<?php echo htmlspecialchars($login_link); ?>"
+            class="nav-link"
+            >Login</a
+          >
+          <?php endif; ?>
+        </div>
       </div>
     </header>
 
@@ -147,10 +151,10 @@ $delete_action = 'delete_post.php';
         <h2 class="post-title"><?php echo htmlspecialchars($post['title']); ?></h2>
         <p class="post-description"><?php echo htmlspecialchars($post['description']); ?></p>
 
-        <small>
+        <div class="post-meta">
           Posted by: <?php echo htmlspecialchars($post['username'] ?? 'Unknown'); ?> |
           Posted on: <?php echo htmlspecialchars($post['created_at']); ?>
-        </small>
+        </div>
 
         <!-- only show edit and delete if the current user owns this post -->
         <?php if (!empty($post['is_owner'])): ?>

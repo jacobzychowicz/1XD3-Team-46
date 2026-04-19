@@ -48,9 +48,11 @@ $logout_action = 'login.php';
       <?php if ($user_name): ?>
         <span class="current-user">Current User: <?php echo htmlspecialchars($user_name); ?></span>
       <?php endif; ?>
+      <a href="../index.php" class="nav-link">Home</a>
+      <a href="../about.php" class="nav-link">About</a>
       <a
         href="<?php echo htmlspecialchars($posts_link); ?>"
-        class="nav-link nav-link-primary">Posts</a>
+        class="nav-link">Posts</a>
       <!-- if user logged in show logout button -->
       <?php if ($is_logged_in): ?>
         <form action="<?php echo htmlspecialchars($logout_action); ?>" method="post" class="logout-form">
@@ -61,7 +63,7 @@ $logout_action = 'login.php';
       <?php else: ?>
         <a
           href="<?php echo htmlspecialchars($login_link); ?>"
-          class="nav-link nav-link-secondary">Login</a>
+          class="nav-link">Login</a>
       <?php endif; ?>
     </div>
   </header>

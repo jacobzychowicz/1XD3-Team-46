@@ -1,25 +1,24 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 button, .button, input[type="submit"], input[type="button"], .logout-button, .delete-button {
-	padding: 10px 22px;
-	border: none;
-	border-radius: 6px;
-	background: #a5d6a7;
-	color: #222;
+	padding: 10px 20px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background: #fff;
+	color: #333;
 	font-size: 1rem;
 	font-family: inherit;
 	font-weight: 500;
 	cursor: pointer;
-	transition: background 0.18s, color 0.18s, box-shadow 0.18s;
-	box-shadow: 0 1px 3px rgba(56,142,60,0.04);
+	transition: background 0.2s, border-color 0.2s;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 	margin-bottom: 8px;
 	outline: none;
 }
 button:hover, .button:hover, input[type="submit"]:hover, input[type="button"]:hover, .logout-button:hover, .delete-button:hover {
-	background: #66bb6a;
-	color: #fff;
-}
-button:active, .button:active, input[type="submit"]:active, input[type="button"]:active, .logout-button:active, .delete-button:active {
-	background: #388e3c;
-	color: #fff;
+	background: #f5f5f5;
+	border-color: #ccc;
 }
 
 .delete-button {
@@ -49,72 +48,86 @@ input[style*="border-color: green"], textarea[style*="border-color: green"] {
 
 body {
 	margin: 0;
-	font-family: 'Segoe UI', Arial, sans-serif;
-	color: #222;
-	background: #f7f9f7;
+	font-family: 'Roboto', Arial, sans-serif;
+	color: #333;
+	background: #f5f5f5;
+	line-height: 1.6;
 }
 
 .site-header {
-	background: #e8f5e9;
-	padding: 18px 0 12px 0;
-	text-align: center;
-	border-bottom: 1px solid #d0d7d0;
+	background: #fff;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	padding: 0;
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.header-container {
+	max-width: 1200px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 40px;
 }
 
 .site-title {
 	margin: 0;
-	font-size: 2rem;
-	color: #388e3c;
+	font-size: 1.8rem;
+	color: #2e7d32;
 	font-weight: 700;
 }
 
 .site-nav {
-	margin-top: 10px;
 	display: flex;
-	justify-content: center;
-	gap: 12px;
+	align-items: center;
+	gap: 20px;
 	flex-wrap: wrap;
 }
 
+@media (max-width: 768px) {
+	.header-container {
+		flex-direction: column;
+		text-align: center;
+		padding: 20px;
+	}
+	.site-nav {
+		justify-content: center;
+		margin-top: 20px;
+	}
+	.site-title {
+		margin: 0;
+	}
+}
+
 .current-user {
-	color: #388e3c;
-	font-size: 1rem;
-	font-weight: 500;
+	color: #666;
+	font-size: 0.9rem;
+	font-weight: 400;
+	margin-right: 20px;
 }
 
 
 .nav-link {
 	display: inline-block;
-	padding: 10px 22px;
+	padding: 8px 16px;
 	border: none;
-	border-radius: 6px;
-	background: #a5d6a7;
-	color: #222;
+	border-radius: 4px;
+	background: transparent;
+	color: #2e7d32;
 	text-decoration: none;
 	font-size: 1rem;
 	font-family: inherit;
 	font-weight: 500;
 	cursor: pointer;
-	transition: background 0.18s, color 0.18s, box-shadow 0.18s;
-	box-shadow: 0 1px 3px rgba(56,142,60,0.04);
-	margin-bottom: 8px;
+	transition: background 0.2s, color 0.2s;
+	margin-bottom: 0;
 	outline: none;
 }
-.nav-link-primary {
-	background: #a5d6a7;
-	color: #222;
-}
-.nav-link-secondary {
-	background: #f3f3f3;
-	color: #222;
-}
 .nav-link:hover {
-	background: #66bb6a;
-	color: #fff;
-}
-.nav-link:active {
-	background: #388e3c;
-	color: #fff;
+	background: #e8f5e9;
+	color: #2e7d32;
 }
 
 .logout-form {

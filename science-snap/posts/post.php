@@ -90,21 +90,24 @@ $logout_action = 'post.php';
 
   <body>
     <header class="site-header">
-      <h1 class="site-title">Science Snap</h1>
-      <div class="site-nav">
+      <div class="header-container">
+        <h1 class="site-title">Science Snap</h1>
+        <div class="site-nav">
         <?php if ($user_name): ?>
         <span class="current-user">Current User: <?php echo htmlspecialchars($user_name); ?></span>
         <?php endif; ?>
+        <a href="../index.php" class="nav-link">Home</a>
+        <a href="../about.php" class="nav-link">About</a>
         <a
           href="<?php echo htmlspecialchars($posts_link); ?>"
-          class="nav-link nav-link-primary"
+          class="nav-link"
           >Posts</a
         >
 
         <?php if ($is_logged_in && $is_admin): ?>
         <a
           href="<?php echo htmlspecialchars($create_post_link); ?>"
-          class="nav-link nav-link-secondary"
+          class="nav-link"
           >Create Post</a>
         <?php endif; ?>
         <?php if ($is_logged_in): ?>
@@ -115,7 +118,7 @@ $logout_action = 'post.php';
         <?php else: ?>
         <a
           href="<?php echo htmlspecialchars($login_link); ?>"
-          class="nav-link nav-link-secondary"
+          class="nav-link"
           >Login</a
         >
         <?php endif; ?>
