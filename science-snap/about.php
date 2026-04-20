@@ -1,4 +1,9 @@
 <?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-21
+ * Description: About page for Science Snap - displays information about Zak Yarwood and the platform
+ */
 
 session_start();
 

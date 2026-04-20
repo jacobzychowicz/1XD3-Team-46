@@ -1,3 +1,7 @@
+// Edgar, Jamie, Noah, Jacob
+// Date Created: 2026-03-20
+// Description: Universal form validation - validates all forms with real-time feedback on input validity
+
 // validation/form-validation.js
 // Universal AJAX form validation for all forms on the site
 // - Uses existing HTML5 validation rules
@@ -7,7 +11,14 @@
 
 (function() {
 
-  // Utility: add feedback border and message
+  /**
+   * Sets the visual state of a form field - applies green border for valid, red for invalid
+   *
+   * @param {HTMLElement} field - The form field element to update
+   * @param {boolean} valid - Whether the field is valid (true) or invalid (false)
+   * @param {string} message - Error message to display if invalid
+   * @returns void
+   */
   function setFieldState(field, valid, message) {
     if (valid) {
       field.style.borderColor = 'green';
@@ -18,13 +29,24 @@
     }
   }
 
-  // Utility: clear feedback border and message
+  /**
+   * Clears the visual state of a form field - removes border styling and error messages
+   *
+   * @param {HTMLElement} field - The form field element to clear
+   * @returns void
+   */
   function clearFieldState(field) {
     field.style.borderColor = '';
     removeErrorMessage(field);
   }
 
-  // Show error message below the field
+  /**
+   * Displays an error message below a form field
+   *
+   * @param {HTMLElement} field - The form field element
+   * @param {string} message - The error message to display
+   * @returns void
+   */
   function showErrorMessage(field, message) {
     removeErrorMessage(field);
     if (!message) return;
@@ -35,14 +57,24 @@
     field.insertAdjacentElement('afterend', msg);
   }
 
-  // Remove error message if present
+  /**
+   * Removes any error message displayed below a form field
+   *
+   * @param {HTMLElement} field - The form field element
+   * @returns void
+   */
   function removeErrorMessage(field) {
     if (field.nextElementSibling && field.nextElementSibling.classList.contains('input-feedback')) {
       field.nextElementSibling.remove();
     }
   }
 
-  // Get the validation message for a field, matching server-side rules
+  /**
+   * Gets the appropriate validation error message for a form field based on its validity state
+   *
+   * @param {HTMLElement} field - The form field element to validate
+   * @returns {string} - The validation error message, or empty string if valid
+   */
   function getValidationMessage(field) {
     // Required
     if (field.validity.valueMissing) return 'This field is required.';
@@ -97,7 +129,12 @@
     return field.validationMessage || 'Invalid input.';
   }
 
-  // Validate a single field
+  /**
+   * Validates a single form field and updates its visual state and error message
+   *
+   * @param {HTMLElement} field - The form field element to validate
+   * @returns {boolean} - True if field is valid, false otherwise
+   */
   function validateField(field) {
     if (field.disabled || field.type === 'hidden' || field.type === 'submit' || field.type === 'button') return true;
     if (field.willValidate === false) return true;
@@ -149,7 +186,12 @@
     return valid;
   }
 
-  // Validate all fields in a form
+  /**
+   * Validates all fields in a form
+   *
+   * @param {HTMLFormElement} form - The form element containing fields to validate
+   * @returns {boolean} - True if all fields are valid, false if any field is invalid
+   */
   function validateForm(form) {
     let valid = true;
     Array.from(form.elements).forEach(field => {
@@ -158,7 +200,11 @@
     return valid;
   }
 
-  // Attach listeners to all forms
+  /**
+   * Sets up validation listeners on all forms in the document for real-time validation feedback
+   *
+   * @returns void
+   */
   function setupValidation() {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {

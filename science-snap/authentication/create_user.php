@@ -1,4 +1,9 @@
 <?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-25
+ * Description: Handles user registration - validates form input and creates new user account in database
+ */
 
 session_start();
 

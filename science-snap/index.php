@@ -1,4 +1,9 @@
 <?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-20
+ * Description: Homepage of Science Snap - displays the main landing page with navigation and current user info
+ */
 
 session_start();
 

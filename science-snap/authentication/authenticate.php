@@ -1,4 +1,9 @@
 <?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-23
+ * Description: Authenticates user login credentials - validates email/password and creates session
+ */
 
 session_start();
 

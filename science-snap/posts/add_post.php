@@ -1,4 +1,9 @@
 <?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-27
+ * Description: Handles post creation - displays form and processes new post submissions (admin only)
+ */
 
 session_start();
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-26
+ * Description: Displays all posts with search functionality - shows post list with author and creation date info
+ */
 
 session_start();
 

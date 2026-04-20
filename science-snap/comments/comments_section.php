@@ -1,4 +1,10 @@
 <?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-31
+ * Description: Comments section template - displays comment form and comment thread
+ */
+
 // comment form action
 $comment_action = '../comments/add_comment.php';
 ?>

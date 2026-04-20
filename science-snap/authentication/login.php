@@ -1,4 +1,9 @@
 <?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-24
+ * Description: Login and registration page - displays forms for user authentication and account creation
+ */
 
 // start session
 session_start();

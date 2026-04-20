@@ -1,6 +1,17 @@
 <?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-30
+ * Description: Comment functions - loads and displays threaded comments for posts
+ */
 
-// load comments for one post and group by parent id FOR THREADING
+/**
+ * Loads all comments for a post and organizes them by parent ID for threading
+ *
+ * @param {PDO} $pdo - Database connection object
+ * @param {int} $post_id - The ID of the post to load comments for
+ * @returns array - Comments organized by parent ID, with root comments under 'root' key
+ */
 function comments_load_tree($pdo, $post_id)
 {
   $stmt = $pdo->prepare(
@@ -31,7 +42,16 @@ function comments_load_tree($pdo, $post_id)
   return $comments_by_parent;
 }
 
-// print comment thread
+/**
+ * Recursively prints a comment thread starting from a parent comment
+ *
+ * @param {string|int} $parent_key - The parent ID key to fetch comments from the array ('root' for top-level comments)
+ * @param {array} $comments_by_parent - Comments organized by parent ID
+ * @param {array} $post - The post being displayed
+ * @param {bool} $is_logged_in - Whether the current user is logged in
+ * @param {string} $comment_action - URL for the comment form action
+ * @returns void
+ */
 function comments_print_tree($parent_key, $comments_by_parent, $post, $is_logged_in, $comment_action)
 {
   if (empty($comments_by_parent[$parent_key])) {

@@ -1,4 +1,10 @@
-<?php 
+
+<?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-29
+ * Description: Handles post deletion - removes post from database if user is the owner
+ */
 
 session_start();
 

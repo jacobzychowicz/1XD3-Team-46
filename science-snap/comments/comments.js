@@ -1,4 +1,11 @@
 // show/hide reply form
+// Edgar, Jamie, Noah, Jacob
+// Date Created: 2026-03-31
+// Description: Comment reply functionality - handles showing/hiding reply forms for threaded comments
+
+/**
+ * Handles comment reply form interactions - toggles reply panels and clears form data
+ */
 (function () {
   var toggles = document.querySelectorAll('.comment-reply-toggle');
   for (var i = 0; i < toggles.length; i++) {

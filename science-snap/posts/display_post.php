@@ -1,4 +1,9 @@
 <?php
+/**
+ * Edgar, Jamie, Noah, Jacob
+ * Date Created: 2026-03-28
+ * Description: Displays a single post with comments - shows post content and comment thread
+ */
 
 session_start();
 
